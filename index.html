@@ -3,49 +3,210 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Victor</title>
+  <title>Your Name</title>
+
   <style>
-    :root { color-scheme: dark light; }
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      line-height: 1.5;
+    :root{
+      --bg:#000;
+      --fg:#f5f5f5;
+      --muted:#9a9a9a;
+      --card:#0b0b0b;
+      --border:rgba(255,255,255,.10);
+      --hover:rgba(255,255,255,.18);
     }
-    main {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 48px 20px;
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--fg);
+      font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      letter-spacing:.2px;
     }
-    h1 { margin: 0 0 12px; font-size: 40px; letter-spacing: -0.02em; }
-    a { text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .email { margin: 0 0 28px; font-size: 16px; }
-    hr { border: 0; border-top: 1px solid rgba(127,127,127,.35); margin: 28px 0; }
-    h2 { margin: 0 0 12px; font-size: 18px; opacity: 0.9; }
-    .note { opacity: 0.7; font-size: 14px; margin: 0 0 16px; }
-    .video-list { margin: 0; padding-left: 18px; }
-    .video-list li { margin: 8px 0; }
+
+    a{ color:inherit; text-decoration:none; }
+    a:hover{ opacity:.9; }
+
+    /* Top bar */
+    .top{
+      position:sticky;
+      top:0;
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,.65);
+      border-bottom:1px solid var(--border);
+      z-index:10;
+    }
+    .top-inner{
+      max-width:1100px;
+      margin:0 auto;
+      padding:18px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .brand{
+      font-weight:600;
+      letter-spacing:.6px;
+      text-transform:uppercase;
+      font-size:12px;
+      color:var(--fg);
+    }
+    .nav{
+      display:flex;
+      gap:18px;
+      font-size:12px;
+      color:var(--muted);
+      text-transform:uppercase;
+      letter-spacing:.6px;
+    }
+    .nav a:hover{ color:var(--fg); }
+
+    /* Main */
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:28px 20px 64px;
+    }
+
+    .hero{
+      padding:34px 0 22px;
+      border-bottom:1px solid var(--border);
+      margin-bottom:22px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:34px;
+      font-weight:650;
+      letter-spacing:-.4px;
+    }
+    .email{
+      color:var(--muted);
+      font-size:14px;
+    }
+    .email a{
+      color:var(--fg);
+      border-bottom:1px solid var(--border);
+      padding-bottom:2px;
+    }
+    .email a:hover{ border-bottom-color:var(--hover); }
+
+    /* Grid */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:14px;
+    }
+
+    .tile{
+      border:1px solid var(--border);
+      background:var(--card);
+      border-radius:14px;
+      overflow:hidden;
+      position:relative;
+      min-height:220px;
+      transition: transform .15s ease, border-color .15s ease;
+    }
+    .tile:hover{
+      transform: translateY(-2px);
+      border-color: var(--hover);
+    }
+
+    /* Placeholder (until you add real videos) */
+    .ph{
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:rgba(255,255,255,.55);
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      padding:18px;
+      text-align:center;
+      background:
+        radial-gradient(900px 300px at 20% 10%, rgba(255,255,255,.08), transparent 60%),
+        radial-gradient(600px 250px at 80% 90%, rgba(255,255,255,.06), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+    }
+
+    /* Responsive layout similar to the example mosaic */
+    .w-8{ grid-column: span 8; }
+    .w-4{ grid-column: span 4; }
+    .w-6{ grid-column: span 6; }
+    .w-12{ grid-column: span 12; }
+
+    @media (max-width: 900px){
+      .w-8,.w-6,.w-4{ grid-column: span 12; }
+      h1{ font-size:28px; }
+    }
+
+    /* Footer */
+    footer{
+      margin-top:26px;
+      padding-top:20px;
+      border-top:1px solid var(--border);
+      color:var(--muted);
+      font-size:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
   </style>
 </head>
+
 <body>
-  <main>
-    <h1>Victor</h1>
+  <div class="top">
+    <div class="top-inner">
+      <div class="brand">YOUR NAME</div>
+      <nav class="nav">
+        <a href="#work">Work</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </div>
 
-    <p class="email">
-      ✉ <a href="mailto:YOUR_EMAIL_HERE">YOUR_EMAIL_HERE</a>
-    </p>
+  <main class="wrap">
+    <section class="hero" id="contact">
+      <h1>Your Name</h1>
+      <div class="email">
+        Email: <a href="mailto:you@email.com">you@email.com</a>
+      </div>
+    </section>
 
-    <hr>
+    <section id="work" class="grid" aria-label="Video grid">
+      <!-- Replace placeholders with real videos later -->
+      <a class="tile w-8" href="#">
+        <div class="ph">Video Placeholder (Wide)</div>
+      </a>
 
-    <h2>Videos</h2>
-    <p class="note">Add links here later.</p>
+      <a class="tile w-4" href="#">
+        <div class="ph">Video Placeholder</div>
+      </a>
 
-    <ul class="video-list">
-      <!-- Replace these with your real links later -->
-      <li><a href="#" target="_blank" rel="noopener">Video Title 1</a></li>
-      <li><a href="#" target="_blank" rel="noopener">Video Title 2</a></li>
-      <li><a href="#" target="_blank" rel="noopener">Video Title 3</a></li>
-    </ul>
+      <a class="tile w-6" href="#">
+        <div class="ph">Video Placeholder</div>
+      </a>
+
+      <a class="tile w-6" href="#">
+        <div class="ph">Video Placeholder</div>
+      </a>
+
+      <a class="tile w-12" href="#">
+        <div class="ph">Video Placeholder (Full Width)</div>
+      </a>
+    </section>
+
+    <footer>
+      <div>© <span id="y"></span> Your Name</div>
+      <div>Built simple. Black background. Videos later.</div>
+    </footer>
   </main>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
