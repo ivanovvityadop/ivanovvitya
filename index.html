@@ -2,211 +2,296 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Name</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Victor Ivanov</title>
+  <meta name="description" content="Victor Ivanov — Cinematography portfolio" />
 
   <style>
     :root{
       --bg:#000;
-      --fg:#f5f5f5;
-      --muted:#9a9a9a;
-      --card:#0b0b0b;
-      --border:rgba(255,255,255,.10);
-      --hover:rgba(255,255,255,.18);
+      --fg:#f2f2f2;
+      --muted:rgba(255,255,255,.65);
+      --gap:16px;
+      --max:1400px;
+      --pad:26px;
+      --radius:0px; /* keep it sharp like reference */
+      --hoverOverlay: rgba(0,0,0,.55);
     }
 
     *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
       margin:0;
       background:var(--bg);
       color:var(--fg);
-      font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      letter-spacing:.2px;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    a{ color:inherit; text-decoration:none; }
-    a:hover{ opacity:.9; }
-
-    /* Top bar */
-    .top{
+    /* Top header */
+    header{
       position:sticky;
       top:0;
-      backdrop-filter: blur(10px);
-      background: rgba(0,0,0,.65);
-      border-bottom:1px solid var(--border);
       z-index:10;
+      background:linear-gradient(to bottom, rgba(0,0,0,.85), rgba(0,0,0,.35), rgba(0,0,0,0));
+      backdrop-filter: blur(6px);
     }
-    .top-inner{
-      max-width:1100px;
+    .nav{
+      max-width:var(--max);
       margin:0 auto;
-      padding:18px 20px;
+      padding:18px var(--pad);
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:16px;
     }
     .brand{
-      font-weight:600;
-      letter-spacing:.6px;
-      text-transform:uppercase;
-      font-size:12px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      text-decoration:none;
       color:var(--fg);
+      letter-spacing:.04em;
+      font-weight:400;
+      font-size:14px;
+      text-transform:uppercase;
+      opacity:.95;
     }
-    .nav{
+    .brand:hover{ opacity:1; }
+
+    .rightLinks{
       display:flex;
       gap:18px;
       font-size:12px;
-      color:var(--muted);
+      letter-spacing:.06em;
       text-transform:uppercase;
-      letter-spacing:.6px;
     }
-    .nav a:hover{ color:var(--fg); }
+    .rightLinks a{
+      color:var(--muted);
+      text-decoration:none;
+    }
+    .rightLinks a:hover{ color:var(--fg); }
 
-    /* Main */
-    .wrap{
-      max-width:1100px;
+    /* Page wrap */
+    main{
+      max-width:var(--max);
       margin:0 auto;
-      padding:28px 20px 64px;
+      padding:0 var(--pad) 60px;
     }
 
-    .hero{
-      padding:34px 0 22px;
-      border-bottom:1px solid var(--border);
-      margin-bottom:22px;
-    }
-    h1{
-      margin:0 0 8px;
-      font-size:34px;
-      font-weight:650;
-      letter-spacing:-.4px;
-    }
-    .email{
-      color:var(--muted);
-      font-size:14px;
-    }
-    .email a{
-      color:var(--fg);
-      border-bottom:1px solid var(--border);
-      padding-bottom:2px;
-    }
-    .email a:hover{ border-bottom-color:var(--hover); }
-
-    /* Grid */
+    /* Masonry-ish grid (simple, like the reference feel) */
     .grid{
-      display:grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap:14px;
+      column-count: 3;
+      column-gap: var(--gap);
+      padding-top: 14px;
+    }
+    @media (max-width: 1100px){ .grid{ column-count:2; } }
+    @media (max-width: 680px){ .grid{ column-count:1; } }
+
+    .card{
+      break-inside: avoid;
+      margin: 0 0 var(--gap);
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      background:#090909;
     }
 
-    .tile{
-      border:1px solid var(--border);
-      background:var(--card);
-      border-radius:14px;
-      overflow:hidden;
-      position:relative;
-      min-height:220px;
-      transition: transform .15s ease, border-color .15s ease;
-    }
-    .tile:hover{
-      transform: translateY(-2px);
-      border-color: var(--hover);
-    }
-
-    /* Placeholder (until you add real videos) */
-    .ph{
+    .thumb{
       width:100%;
-      height:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:rgba(255,255,255,.55);
-      font-size:12px;
-      text-transform:uppercase;
-      letter-spacing:1px;
-      padding:18px;
-      text-align:center;
-      background:
-        radial-gradient(900px 300px at 20% 10%, rgba(255,255,255,.08), transparent 60%),
-        radial-gradient(600px 250px at 80% 90%, rgba(255,255,255,.06), transparent 55%),
-        linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      height:auto;
+      display:block;
+      transform: scale(1);
+      transition: transform .35s ease;
+      will-change: transform;
     }
 
-    /* Responsive layout similar to the example mosaic */
-    .w-8{ grid-column: span 8; }
-    .w-4{ grid-column: span 4; }
-    .w-6{ grid-column: span 6; }
-    .w-12{ grid-column: span 12; }
+    .card:hover .thumb{ transform: scale(1.02); }
 
-    @media (max-width: 900px){
-      .w-8,.w-6,.w-4{ grid-column: span 12; }
-      h1{ font-size:28px; }
+    /* Hover title overlay */
+    .overlay{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:flex-end;
+      padding:18px;
+      background: linear-gradient(to top, rgba(0,0,0,.70), rgba(0,0,0,0));
+      opacity:0;
+      transition: opacity .2s ease;
+    }
+    .card:hover .overlay{ opacity:1; }
+
+    .title{
+      font-size:12px;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      color:var(--fg);
+      line-height:1.2;
+    }
+
+    /* Click behavior */
+    .card a{
+      display:block;
+      color:inherit;
+      text-decoration:none;
+      outline:none;
+    }
+    .card a:focus-visible{
+      outline:2px solid rgba(255,255,255,.7);
+      outline-offset:3px;
     }
 
     /* Footer */
     footer{
-      margin-top:26px;
-      padding-top:20px;
-      border-top:1px solid var(--border);
-      color:var(--muted);
+      max-width:var(--max);
+      margin:0 auto;
+      padding:28px var(--pad) 40px;
+      color:rgba(255,255,255,.35);
       font-size:12px;
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
+      letter-spacing:.03em;
     }
+
+    /* Optional modal for Vimeo/YT embeds */
+    .modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      place-items:center;
+      background:rgba(0,0,0,.82);
+      padding:24px;
+      z-index:100;
+    }
+    .modal.open{ display:grid; }
+    .modalInner{
+      width:min(1100px, 100%);
+      aspect-ratio:16/9;
+      background:#000;
+      position:relative;
+    }
+    .modalInner iframe{
+      width:100%;
+      height:100%;
+      border:0;
+    }
+    .closeBtn{
+      position:absolute;
+      top:-44px;
+      right:0;
+      background:transparent;
+      border:0;
+      color:rgba(255,255,255,.8);
+      font-size:13px;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      cursor:pointer;
+      padding:10px 0;
+    }
+    .closeBtn:hover{ color:#fff; }
   </style>
 </head>
 
 <body>
-  <div class="top">
-    <div class="top-inner">
-      <div class="brand">YOUR NAME</div>
-      <nav class="nav">
-        <a href="#work">Work</a>
-        <a href="#contact">Contact</a>
+  <header>
+    <div class="nav">
+      <a class="brand" href="#" aria-label="Home">
+        Victor Ivanov
+      </a>
+
+      <!-- optional: remove these if you want NOTHING on the right -->
+      <nav class="rightLinks" aria-label="External links">
+        <a href="mailto:your@email.com">Email</a>
+        <a href="https://vimeo.com/" target="_blank" rel="noreferrer">Vimeo</a>
+        <a href="https://instagram.com/" target="_blank" rel="noreferrer">Instagram</a>
       </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="grid" id="grid">
+      <!--
+        Add items like this:
+        data-embed: Vimeo/YT embed URL for modal (optional)
+        href: if you prefer opening a project page or external link instead of modal
+      -->
+
+      <article class="card">
+        <a href="#" data-embed="https://player.vimeo.com/video/000000000?h=YOURHASH&autoplay=1&title=0&byline=0&portrait=0">
+          <img class="thumb" src="thumbs/01.jpg" alt="Project Title 01">
+          <div class="overlay"><div class="title">Project Title 01</div></div>
+        </a>
+      </article>
+
+      <article class="card">
+        <a href="#" data-embed="https://player.vimeo.com/video/000000001?h=YOURHASH&autoplay=1&title=0&byline=0&portrait=0">
+          <img class="thumb" src="thumbs/02.jpg" alt="Project Title 02">
+          <div class="overlay"><div class="title">Project Title 02</div></div>
+        </a>
+      </article>
+
+      <article class="card">
+        <a href="#" data-embed="https://www.youtube.com/embed/VIDEO_ID?autoplay=1&rel=0">
+          <img class="thumb" src="thumbs/03.jpg" alt="Project Title 03">
+          <div class="overlay"><div class="title">Project Title 03</div></div>
+        </a>
+      </article>
+
+      <!-- duplicate articles as needed -->
+    </section>
+  </main>
+
+  <footer>
+    © <span id="year"></span> Victor Ivanov. All rights reserved.
+  </footer>
+
+  <!-- Modal -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modalInner">
+      <button class="closeBtn" id="closeBtn" type="button">Close</button>
+      <iframe id="player" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
     </div>
   </div>
 
-  <main class="wrap">
-    <section class="hero" id="contact">
-      <h1>Your Name</h1>
-      <div class="email">
-        Email: <a href="mailto:you@email.com">you@email.com</a>
-      </div>
-    </section>
-
-    <section id="work" class="grid" aria-label="Video grid">
-      <!-- Replace placeholders with real videos later -->
-      <a class="tile w-8" href="#">
-        <div class="ph">Video Placeholder (Wide)</div>
-      </a>
-
-      <a class="tile w-4" href="#">
-        <div class="ph">Video Placeholder</div>
-      </a>
-
-      <a class="tile w-6" href="#">
-        <div class="ph">Video Placeholder</div>
-      </a>
-
-      <a class="tile w-6" href="#">
-        <div class="ph">Video Placeholder</div>
-      </a>
-
-      <a class="tile w-12" href="#">
-        <div class="ph">Video Placeholder (Full Width)</div>
-      </a>
-    </section>
-
-    <footer>
-      <div>© <span id="y"></span> Your Name</div>
-      <div>Built simple. Black background. Videos later.</div>
-    </footer>
-  </main>
-
   <script>
-    document.getElementById("y").textContent = new Date().getFullYear();
+    // footer year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // click-to-open modal player (optional)
+    const modal = document.getElementById("modal");
+    const player = document.getElementById("player");
+    const closeBtn = document.getElementById("closeBtn");
+
+    function openModal(src){
+      player.src = src;
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal(){
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+      player.src = "";
+      document.body.style.overflow = "";
+    }
+
+    document.addEventListener("click", (e) => {
+      const a = e.target.closest("a[data-embed]");
+      if(!a) return;
+
+      // if you want NO modal and just link out, remove this whole handler
+      e.preventDefault();
+      const src = a.getAttribute("data-embed");
+      if(src) openModal(src);
+    });
+
+    closeBtn.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+      if(e.target === modal) closeModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if(e.key === "Escape" && modal.classList.contains("open")) closeModal();
+    });
   </script>
 </body>
 </html>
