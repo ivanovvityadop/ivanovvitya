@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Stills — Victor Ivanov</title>
+
+  <style>
+    :root{
+      --bg:#000;
+      --fg:#f2f2f2;
+      --muted:rgba(255,255,255,.6);
+      --gap:16px;
+      --max:1400px;
+      --pad:26px;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--fg);
+      font-family: ui-sans-serif, system-ui;
+    }
+
+    .wrap{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:var(--pad);
+    }
+
+    h1{
+      font-size:14px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      opacity:.7;
+      margin:0 0 24px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+      gap:var(--gap);
+    }
+
+    img{
+      width:100%;
+      display:block;
+    }
+
+    /* ADMIN ONLY */
+    #admin{
+      display:none;
+      margin-top:30px;
+      padding:16px;
+      border:1px solid #222;
+    }
+
+    input{
+      background:#111;
+      color:#fff;
+      border:1px solid #333;
+      padding:10px;
+      font-size:12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <h1>Stills</h1>
+
+    <!-- PUBLIC GALLERY -->
+    <div class="grid" id="gallery"></div>
+
+    <!-- ADMIN ONLY -->
+    <div id="admin">
+      <p style="margin:0 0 10px;opacity:.6">
+        Admin upload (only visible to you)
+      </p>
+      <input type="file" accept="image/*" multiple onchange="preview(event)">
+    </div>
+  </div>
+
+<script>
+  /* ============ ADMIN VISIBILITY ============ */
+  const ADMIN_KEY = 'victor-admin';
+
+  if (localStorage.getItem('admin') === ADMIN_KEY) {
+    document.getElementById('admin').style.display = 'block';
+  }
+
+  // Run once in browser console on YOUR device:
+  // localStorage.setItem('admin','victor-admin'); location.reload();
+
+  /* ============ PUBLIC IMAGES ============ */
+  const images = [
+    'stills/01.jpg',
+    'stills/02.jpg',
+    'stills/03.jpg'
+  ];
+
+  const gallery = document.getElementById('gallery');
+
+  images.forEach(src => {
+    const img = document.createElement('img');
+    img.src = src;
+    gallery.appendChild(img);
+  });
+
+  /* ============ ADMIN PREVIEW (LOCAL ONLY) ============ */
+  function preview(e){
+    [...e.target.files].forEach(file => {
+      const img = document.createElement('img');
+      img.src = URL.createObjectURL(file);
+      gallery.prepend(img);
+    });
+  }
+</script>
+</body>
+</html>
