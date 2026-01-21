@@ -1,5 +1,4 @@
 <!doctype html>
-
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -7,13 +6,14 @@
 <title>Stills</title>
 
 <style>
+/* KEEP SITE STYLE – NO CUSTOM FONT */
 body{
   margin:0;
   background:#000;
   color:#fff;
-  font-family:system-ui;
 }
 
+/* MATCH EXISTING SITE FEEL */
 header{
   padding:16px;
   font-size:12px;
@@ -29,6 +29,13 @@ header a{
   padding:16px;
 }
 
+h1{
+  font-size:16px;
+  font-weight:400;
+  margin:0 0 16px 0;
+}
+
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
@@ -41,21 +48,25 @@ header a{
   background:#111;
 }
 
-/* UPLOAD BUTTON — ALWAYS VISIBLE */
+/* UPLOAD BUTTON — GREY, SAME LEVEL AS BACK */
 #uploadBtn{
   position:fixed;
   bottom:16px;
   left:16px;
-  padding:8px 12px;
+  padding:6px 10px;
   font-size:11px;
-  color:#ff3b3b;
-  border:1px solid #ff3b3b;
+  color:#aaa;
+  border:1px solid #333;
   background:#000;
   cursor:pointer;
+  opacity:.7;
   z-index:9999;
 }
-</style>
 
+#uploadBtn:hover{
+  opacity:1;
+}
+</style>
 </head>
 
 <body>
@@ -70,37 +81,34 @@ header a{
 </div>
 
 <input type="file" id="upload" accept="image/*" multiple hidden>
-<button id="uploadBtn">UPLOAD STILLS</button>
+<button id="uploadBtn">UPLOAD</button>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-
 <script>
-/* SUPABASE CONFIG */
+/* ===== SUPABASE ===== */
 const SUPABASE_URL = 'https://dlucexekstfahyhefwhz.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_sYXRXxUI8eY5QoUEHEpW-g_Tgg49Nmt';
-
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+/* ===== ELEMENTS ===== */
 const gallery = document.getElementById('gallery');
 const uploadInput = document.getElementById('upload');
 const uploadBtn = document.getElementById('uploadBtn');
 
-/* LOAD IMAGES */
+/* ===== PASSWORD ===== */
+const UPLOAD_PASSWORD = 'qwerty';
+let uploadUnlocked = false;
+
+/* ===== LOAD IMAGES ===== */
 async function loadImages(){
   gallery.innerHTML = '';
 
   const { data, error } = await client
     .storage
     .from('stills')
-    .list('', {
-      limit: 200,
-      sortBy:{ column:'created_at', order:'desc' }
-    });
+    .list('', { limit:200, sortBy:{ column:'created_at', order:'desc' } });
 
-  if (error) {
-    console.error(error);
-    return;
-  }
+  if (error) return;
 
   data.forEach(file => {
     const { data:url } = client
@@ -108,7 +116,7 @@ async function loadImages(){
       .from('stills')
       .getPublicUrl(file.name);
 
-    if (!url || !url.publicUrl) return;
+    if (!url?.publicUrl) return;
 
     const img = document.createElement('img');
     img.src = url.publicUrl;
@@ -117,23 +125,28 @@ async function loadImages(){
   });
 }
 
-/* UPLOAD */
-uploadBtn.onclick = () => uploadInput.click();
+/* ===== UPLOAD FLOW ===== */
+uploadBtn.onclick = () => {
+  if (!uploadUnlocked){
+    const pass = prompt('Password');
+    if (pass !== UPLOAD_PASSWORD) return;
+    uploadUnlocked = true;
+  }
+  uploadInput.click();
+};
 
 uploadInput.onchange = async () => {
   const files = [...uploadInput.files];
 
-  for (const file of files) {
+  for (const file of files){
     if (!file.type.startsWith('image/')) continue;
 
     const name = Date.now() + '-' + file.name;
 
-    const { error } = await client
+    await client
       .storage
       .from('stills')
       .upload(name, file);
-
-    if (error) console.error(error);
   }
 
   uploadInput.value = '';
