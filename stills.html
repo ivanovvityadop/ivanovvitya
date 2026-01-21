@@ -25,23 +25,20 @@
     }
 
     header{
-      max-width:var(--max);
-      margin:0 auto;
       padding:18px var(--pad);
+      font-size:12px;
+      opacity:.7;
     }
 
     header a{
-      color:var(--muted);
+      color:var(--fg);
       text-decoration:none;
-      font-size:12px;
-      letter-spacing:.06em;
-      text-transform:uppercase;
     }
 
     .wrap{
       max-width:var(--max);
       margin:0 auto;
-      padding:0 var(--pad) 60px;
+      padding:0 var(--pad) var(--pad);
     }
 
     h1{
@@ -49,7 +46,7 @@
       letter-spacing:.08em;
       text-transform:uppercase;
       opacity:.7;
-      margin:24px 0;
+      margin:20px 0;
     }
 
     .grid{
@@ -64,119 +61,123 @@
       background:#111;
     }
 
-    /* ADMIN */
-    #admin{
+    /* upload button */
+    #uploadBtn{
+      position:fixed;
+      bottom:16px;
+      left:16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size:11px;
+      color:#ff3b3b;
+      opacity:.35;
+      cursor:pointer;
+      user-select:none;
       display:none;
-      margin-top:30px;
-      padding:16px;
-      border:1px solid #222;
+      z-index:9999;
     }
 
-    input{
-      background:#111;
-      color:#fff;
-      border:1px solid #333;
-      padding:10px;
-      font-size:12px;
+    #uploadBtn:hover{
+      opacity:.9;
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <a href="index.html">← Back</a>
-  </header>
 
-  <div class="wrap">
-    <h1>Stills</h1>
+<header>
+  <a href="index.html">← Back</a>
+</header>
 
-    <!-- PUBLIC GALLERY -->
-    <div class="grid" id="gallery"></div>
+<div class="wrap">
+  <h1>Stills</h1>
+  <div class="grid" id="gallery"></div>
+</div>
 
-    <!-- ADMIN ONLY -->
-    <div id="admin">
-      <p style="margin:0 0 10px;opacity:.6">
-        Upload stills (visible only to you)
-      </p>
-      <input type="file" accept="image/*" multiple id="upload">
-    </div>
-  </div>
+<!-- hidden upload -->
+<input type="file" id="upload" accept="image/*" multiple hidden>
+<div id="uploadBtn">[ UPLOAD STILLS ]</div>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-  /* ================= CONFIG ================= */
-  const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
-  const SUPABASE_KEY = 'YOUR_PUBLIC_ANON_KEY';
-  const ADMIN_KEY = 'victor-admin';
+/* ================= CONFIG ================= */
 
-  const supabase = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+const SUPABASE_URL = 'https://dlucexekstfahyhefwhz.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_sYXRXxUI8eY5QoUEHEpW-g_Tgg49Nmt';
+const ADMIN_KEY = 'victor-admin';
 
-  const gallery = document.getElementById('gallery');
-  const admin = document.getElementById('admin');
-  const uploadInput = document.getElementById('upload');
+const supabase = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-  /* ================= ADMIN VISIBILITY ================= */
-  if (localStorage.getItem('admin') === ADMIN_KEY) {
-    admin.style.display = 'block';
+const gallery = document.getElementById('gallery');
+const uploadInput = document.getElementById('upload');
+const uploadBtn = document.getElementById('uploadBtn');
+
+/* ================= ADMIN VISIBILITY ================= */
+
+if (localStorage.getItem('admin') === ADMIN_KEY) {
+  uploadBtn.style.display = 'block';
+}
+
+/* ================= LOAD IMAGES ================= */
+
+async function loadImages(){
+  const { data, error } = await supabase
+    .storage
+    .from('stills')
+    .list('', {
+      limit: 100,
+      sortBy: { column: 'created_at', order: 'desc' }
+    });
+
+  if (error) {
+    console.error(error);
+    return;
   }
 
-  // Run ONCE on your device:
-  // localStorage.setItem('admin','victor-admin'); location.reload();
+  gallery.innerHTML = '';
 
-  /* ================= LOAD IMAGES ================= */
-  async function loadImages(){
-    const { data, error } = await supabase
+  data.forEach(file => {
+    const { data: url } = supabase
       .storage
       .from('stills')
-      .list('', {
-        limit: 100,
-        sortBy: { column: 'created_at', order: 'desc' }
-      });
+      .getPublicUrl(file.name);
+
+    const img = document.createElement('img');
+    img.src = url.publicUrl;
+    gallery.appendChild(img);
+  });
+}
+
+/* ================= UPLOAD ================= */
+
+uploadBtn.onclick = () => uploadInput.click();
+
+uploadInput.onchange = async () => {
+  const files = [...uploadInput.files];
+
+  for (const file of files) {
+    const filename = `${Date.now()}-${file.name}`;
+
+    const { error } = await supabase
+      .storage
+      .from('stills')
+      .upload(filename, file);
 
     if (error) {
       console.error(error);
-      return;
     }
-
-    gallery.innerHTML = '';
-
-    data.forEach(file => {
-      const { data:url } = supabase
-        .storage
-        .from('stills')
-        .getPublicUrl(file.name);
-
-      const img = document.createElement('img');
-      img.src = url.publicUrl;
-      gallery.appendChild(img);
-    });
   }
 
+  uploadInput.value = '';
   loadImages();
+};
 
-  /* ================= UPLOAD ================= */
-  uploadInput.addEventListener('change', async e => {
-    const files = [...e.target.files];
+/* ================= INIT ================= */
 
-    for (const file of files) {
-      const fileName = `${Date.now()}-${file.name}`;
-
-      const { error } = await supabase
-        .storage
-        .from('stills')
-        .upload(fileName, file);
-
-      if (error) {
-        console.error(error);
-      }
-    }
-
-    e.target.value = '';
-    loadImages();
-  });
+loadImages();
 </script>
+
 </body>
 </html>
