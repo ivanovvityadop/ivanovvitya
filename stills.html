@@ -1,85 +1,61 @@
 <!doctype html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Stills — Victor Ivanov</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Stills</title>
 
-  <style>
-    :root{
-      --bg:#000;
-      --fg:#f2f2f2;
-      --muted:rgba(255,255,255,.6);
-      --gap:16px;
-      --max:1400px;
-      --pad:26px;
-    }
+<style>
+body{
+  margin:0;
+  background:#000;
+  color:#fff;
+  font-family:system-ui;
+}
 
-    *{ box-sizing:border-box; }
+header{
+  padding:16px;
+  font-size:12px;
+  opacity:.7;
+}
 
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--fg);
-      font-family: ui-sans-serif, system-ui;
-    }
+header a{
+  color:#fff;
+  text-decoration:none;
+}
 
-    header{
-      padding:18px var(--pad);
-      font-size:12px;
-      opacity:.7;
-    }
+.wrap{
+  padding:16px;
+}
 
-    header a{
-      color:var(--fg);
-      text-decoration:none;
-    }
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:12px;
+}
 
-    .wrap{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:0 var(--pad) var(--pad);
-    }
+.grid img{
+  width:100%;
+  display:block;
+  background:#111;
+}
 
-    h1{
-      font-size:14px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      opacity:.7;
-      margin:20px 0;
-    }
+/* UPLOAD BUTTON — ALWAYS VISIBLE */
+#uploadBtn{
+  position:fixed;
+  bottom:16px;
+  left:16px;
+  padding:8px 12px;
+  font-size:11px;
+  color:#ff3b3b;
+  border:1px solid #ff3b3b;
+  background:#000;
+  cursor:pointer;
+  z-index:9999;
+}
+</style>
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-      gap:var(--gap);
-    }
-
-    img{
-      width:100%;
-      display:block;
-      background:#111;
-    }
-
-    /* upload button */
-    #uploadBtn{
-      position:fixed;
-      bottom:16px;
-      left:16px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size:11px;
-      color:#ff3b3b;
-      opacity:.35;
-      cursor:pointer;
-      user-select:none;
-      display:none;
-      z-index:9999;
-    }
-
-    #uploadBtn:hover{
-      opacity:.9;
-    }
-  </style>
 </head>
 
 <body>
@@ -90,45 +66,35 @@
 
 <div class="wrap">
   <h1>Stills</h1>
-  <div class="grid" id="gallery"></div>
+  <div id="gallery" class="grid"></div>
 </div>
 
-<!-- hidden upload -->
 <input type="file" id="upload" accept="image/*" multiple hidden>
-<div id="uploadBtn">[ UPLOAD STILLS ]</div>
+<button id="uploadBtn">UPLOAD STILLS</button>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-/* ================= CONFIG ================= */
 
+<script>
+/* SUPABASE CONFIG */
 const SUPABASE_URL = 'https://dlucexekstfahyhefwhz.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_sYXRXxUI8eY5QoUEHEpW-g_Tgg49Nmt';
-const ADMIN_KEY = 'victor-admin';
 
-const supabase = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const gallery = document.getElementById('gallery');
 const uploadInput = document.getElementById('upload');
 const uploadBtn = document.getElementById('uploadBtn');
 
-/* ================= ADMIN VISIBILITY ================= */
-
-if (localStorage.getItem('admin') === ADMIN_KEY) {
-  uploadBtn.style.display = 'block';
-}
-
-/* ================= LOAD IMAGES ================= */
-
+/* LOAD IMAGES */
 async function loadImages(){
-  const { data, error } = await supabase
+  gallery.innerHTML = '';
+
+  const { data, error } = await client
     .storage
     .from('stills')
     .list('', {
-      limit: 100,
-      sortBy: { column: 'created_at', order: 'desc' }
+      limit: 200,
+      sortBy:{ column:'created_at', order:'desc' }
     });
 
   if (error) {
@@ -136,46 +102,45 @@ async function loadImages(){
     return;
   }
 
-  gallery.innerHTML = '';
-
   data.forEach(file => {
-    const { data: url } = supabase
+    const { data:url } = client
       .storage
       .from('stills')
       .getPublicUrl(file.name);
 
+    if (!url || !url.publicUrl) return;
+
     const img = document.createElement('img');
     img.src = url.publicUrl;
+    img.loading = 'lazy';
     gallery.appendChild(img);
   });
 }
 
-/* ================= UPLOAD ================= */
-
+/* UPLOAD */
 uploadBtn.onclick = () => uploadInput.click();
 
 uploadInput.onchange = async () => {
   const files = [...uploadInput.files];
 
   for (const file of files) {
-    const filename = `${Date.now()}-${file.name}`;
+    if (!file.type.startsWith('image/')) continue;
 
-    const { error } = await supabase
+    const name = Date.now() + '-' + file.name;
+
+    const { error } = await client
       .storage
       .from('stills')
-      .upload(filename, file);
+      .upload(name, file);
 
-    if (error) {
-      console.error(error);
-    }
+    if (error) console.error(error);
   }
 
   uploadInput.value = '';
   loadImages();
 };
 
-/* ================= INIT ================= */
-
+/* INIT */
 loadImages();
 </script>
 
