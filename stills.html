@@ -1,180 +1,179 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Stills</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <style>
-    /* =========================
-       BASE / GLOBAL
-    ========================= */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<title>Stills — Victor Ivanov</title>
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI",
-                   Roboto, Helvetica, Arial, sans-serif;
-      background: #0e0e0e;
-      color: #eaeaea;
-      line-height: 1.5;
-    }
+<style>
+:root{
+  --bg:#000;
+  --fg:#f2f2f2;
+  --muted:rgba(255,255,255,.4);
+  --gap:16px;
+  --max:1400px;
+  --pad:26px;
+}
 
-    a {
-      color: #9a9a9a;
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
+*{box-sizing:border-box}
 
-    a:hover {
-      color: #ffffff;
-    }
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:ui-sans-serif,system-ui;
+}
 
-    /* =========================
-       LAYOUT
-    ========================= */
-    .page {
-      max-width: 900px;
-      margin: 80px auto;
-      padding: 0 20px;
-    }
+/* header */
+header{
+  max-width:var(--max);
+  margin:0 auto;
+  padding:18px var(--pad);
+  font-size:12px;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+header a{
+  color:var(--muted);
+  text-decoration:none;
+}
+header a:hover{color:#fff}
 
-    h1 {
-      font-size: 22px;
-      font-weight: 500;
-      margin-bottom: 40px;
-      letter-spacing: 0.3px;
-    }
+/* layout */
+main{
+  max-width:var(--max);
+  margin:0 auto;
+  padding:0 var(--pad) 60px;
+}
 
-    .back {
-      display: inline-block;
-      margin-bottom: 40px;
-      font-size: 14px;
-      opacity: 0.8;
-    }
+h1{
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  opacity:.6;
+  margin:0 0 24px;
+}
 
-    /* =========================
-       UPLOAD BLOCK
-    ========================= */
-    .upload-box {
-      background: #121212;
-      border: 1px solid #1f1f1f;
-      padding: 30px;
-    }
+/* grid */
+.grid{
+  column-count:3;
+  column-gap:var(--gap);
+}
+@media(max-width:1100px){.grid{column-count:2}}
+@media(max-width:680px){.grid{column-count:1}}
 
-    input[type="file"] {
-      display: block;
-      margin-bottom: 20px;
-      color: #9a9a9a;
-    }
+.grid img{
+  width:100%;
+  display:block;
+  margin:0 0 var(--gap);
+  background:#090909;
+}
 
-    input::file-selector-button {
-      background: #1a1a1a;
-      color: #eaeaea;
-      border: 1px solid #2a2a2a;
-      padding: 8px 14px;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
+/* invisible admin trigger */
+#adminTrigger{
+  position:fixed;
+  bottom:14px;
+  left:18px;
+  font-size:11px;
+  font-family:monospace;
+  letter-spacing:.06em;
+  color:#ff3b3b;
+  opacity:.15;
+  cursor:pointer;
+  user-select:none;
+}
+#adminTrigger:hover{opacity:.6}
 
-    input::file-selector-button:hover {
-      background: #222;
-    }
-
-    button {
-      background: #1a1a1a;
-      color: #eaeaea;
-      border: 1px solid #2a2a2a;
-      padding: 10px 18px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.2s ease, opacity 0.2s ease;
-    }
-
-    button:hover:not(:disabled) {
-      background: #222;
-    }
-
-    button:disabled {
-      opacity: 0.5;
-      cursor: default;
-    }
-
-    /* =========================
-       PROGRESS
-    ========================= */
-    .progress-wrap {
-      margin-top: 20px;
-      display: none;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 6px;
-      background: #1a1a1a;
-      border: 1px solid #222;
-      overflow: hidden;
-    }
-
-    .progress {
-      height: 100%;
-      width: 0%;
-      background: #eaeaea;
-      transition: width 0.2s linear;
-    }
-
-    .status {
-      margin-top: 10px;
-      font-size: 13px;
-      color: #9a9a9a;
-    }
-  </style>
+/* fully hidden input */
+#fileInput{
+  display:none;
+}
+</style>
 </head>
 
 <body>
-  <div class="page">
-    <a class="back" href="index.html">← Back</a>
 
-    <h1>Stills</h1>
+<header>
+  <a href="index.html">← Back</a>
+</header>
 
-    <div class="upload-box">
-      <input type="file" id="fileInput" multiple />
+<main>
+  <h1>Stills</h1>
+  <section class="grid" id="gallery"></section>
+</main>
 
-      <button id="uploadBtn">UPLOAD</button>
+<!-- admin only -->
+<div id="adminTrigger">upload stills</div>
+<input id="fileInput" type="file" accept="image/jpeg,image/png" multiple>
 
-      <div class="progress-wrap" id="progressWrap">
-        <div class="progress-bar">
-          <div class="progress" id="progress"></div>
-        </div>
-        <div class="status" id="statusText">Uploading…</div>
-      </div>
-    </div>
-  </div>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+/* ================= CONFIG ================= */
 
-  <script>
-    const uploadBtn = document.getElementById("uploadBtn");
-    const progressWrap = document.getElementById("progressWrap");
-    const progress = document.getElementById("progress");
-    const statusText = document.getElementById("statusText");
+const SUPABASE_URL = 'https://dlucexekstfahyhefwhz.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_sYXRXxUI8eY5QoUEHEpW-g_Tgg49Nmt';
+const ADMIN_PASSWORD = 'victor-admin';
+const MAX_SIZE_MB = 5;
 
-    uploadBtn.addEventListener("click", () => {
-      // UI feedback only (replace with real upload later)
-      uploadBtn.disabled = true;
-      uploadBtn.textContent = "UPLOADING…";
-      progressWrap.style.display = "block";
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const gallery = document.getElementById('gallery');
+const input = document.getElementById('fileInput');
+const trigger = document.getElementById('adminTrigger');
 
-      let value = 0;
+/* ================= ADMIN AUTH ================= */
 
-      const fakeUpload = setInterval(() => {
-        value += Math.random() * 12;
-        if (value >= 100) {
-          value = 100;
-          clearInterval(fakeUpload);
-          statusText.textContent = "Upload complete";
-          uploadBtn.textContent = "UPLOAD";
-          uploadBtn.disabled = false;
-        }
-        progress.style.width = value
+let isAdmin = false;
+
+trigger.onclick = () => {
+  const pass = prompt('password');
+  if(pass === ADMIN_PASSWORD){
+    isAdmin = true;
+    input.click();
+  }
+};
+
+/* ================= LOAD STILLS ================= */
+
+async function loadImages(){
+  const { data, error } = await supabase
+    .storage.from('stills')
+    .list('', { limit: 200, sortBy:{ column:'created_at', order:'desc' } });
+
+  if(error) return;
+
+  gallery.innerHTML = '';
+  data.forEach(file=>{
+    const img = document.createElement('img');
+    img.src = `${SUPABASE_URL}/storage/v1/object/public/stills/${file.name}`;
+    gallery.appendChild(img);
+  });
+}
+
+loadImages();
+
+/* ================= UPLOAD ================= */
+
+input.onchange = async () => {
+  if(!isAdmin) return;
+
+  for(const file of input.files){
+    if(file.size > MAX_SIZE_MB * 1024 * 1024) continue;
+
+    const name = `${Date.now()}-${file.name}`;
+
+    await supabase.storage
+      .from('stills')
+      .upload(name, file, {
+        cacheControl:'3600',
+        upsert:false
+      });
+  }
+
+  input.value='';
+  loadImages();
+};
+</script>
+
+</body>
+</html>
