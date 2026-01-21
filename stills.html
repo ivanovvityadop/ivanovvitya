@@ -65,7 +65,7 @@ img{
   bottom:12px;
   left:12px;
   font-family:monospace;
-  font-size:10px;
+  font-size:6px;
   letter-spacing:.12em;
   color:#ff3b3b;
   opacity:.25;
@@ -73,7 +73,7 @@ img{
   z-index:99999;
   pointer-events:auto;
 }
-#upload:hover{opacity:.6}
+#upload:hover{opacity:.1}
 
 input[type=file]{display:none}
 </style>
@@ -135,6 +135,7 @@ async function load(){
   const { data } = await sb.storage.from(BUCKET).list('', { limit:200, sortBy:{column:'created_at',order:'desc'} });
   gallery.innerHTML = '';
   data.forEach(f=>{
+  if (f.name === '.emptyFolderPlaceholder') return;
     const { data:url } = sb.storage.from(BUCKET).getPublicUrl(f.name);
     const img = document.createElement('img');
     img.src = url.publicUrl;
