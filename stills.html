@@ -1,50 +1,40 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Stills — Victor Ivanov</title>
 
 <style>
 :root{
   --bg:#000;
   --fg:#f2f2f2;
-  --muted:rgba(255,255,255,.4);
+  --muted:rgba(255,255,255,.5);
   --gap:16px;
-  --max:1400px;
   --pad:26px;
 }
 
-*{box-sizing:border-box}
+*{ box-sizing:border-box; }
 
 body{
   margin:0;
   background:var(--bg);
   color:var(--fg);
-  font-family:ui-sans-serif,system-ui;
+  font-family: ui-sans-serif, system-ui, -apple-system;
 }
 
-/* header */
 header{
-  max-width:var(--max);
-  margin:0 auto;
   padding:18px var(--pad);
-  font-size:12px;
-  letter-spacing:.06em;
-  text-transform:uppercase;
 }
-header a{
+
+a{
   color:var(--muted);
   text-decoration:none;
+  font-size:12px;
 }
-header a:hover{color:#fff}
 
-/* layout */
 main{
-  max-width:var(--max);
-  margin:0 auto;
-  padding:0 var(--pad) 60px;
+  padding:0 var(--pad) 80px;
 }
 
 h1{
@@ -55,7 +45,6 @@ h1{
   margin:0 0 24px;
 }
 
-/* grid */
 .grid{
   column-count:3;
   column-gap:var(--gap);
@@ -63,32 +52,30 @@ h1{
 @media(max-width:1100px){.grid{column-count:2}}
 @media(max-width:680px){.grid{column-count:1}}
 
-.grid img{
+img{
   width:100%;
   display:block;
-  margin:0 0 var(--gap);
-  background:#090909;
+  margin-bottom:var(--gap);
+  background:#111;
 }
 
-/* invisible admin trigger */
-#adminTrigger{
+/* UPLOAD TRIGGER */
+#upload{
   position:fixed;
-  bottom:14px;
-  left:18px;
-  font-size:11px;
+  bottom:12px;
+  left:12px;
   font-family:monospace;
-  letter-spacing:.06em;
+  font-size:10px;
+  letter-spacing:.12em;
   color:#ff3b3b;
-  opacity:.15;
+  opacity:.25;
   cursor:pointer;
-  user-select:none;
+  z-index:99999;
+  pointer-events:auto;
 }
-#adminTrigger:hover{opacity:.6}
+#upload:hover{opacity:.6}
 
-/* fully hidden input */
-#fileInput{
-  display:none;
-}
+input[type=file]{display:none}
 </style>
 </head>
 
@@ -100,79 +87,62 @@ h1{
 
 <main>
   <h1>Stills</h1>
-  <section class="grid" id="gallery"></section>
+  <div class="grid" id="gallery"></div>
 </main>
 
-<!-- admin only -->
-<div id="adminTrigger">upload stills</div>
-<input id="fileInput" type="file" accept="image/jpeg,image/png" multiple>
+<div id="upload">[ UPLOAD STILLS ]</div>
+<input id="file" type="file" accept="image/*" multiple>
 
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-/* ================= CONFIG ================= */
+const PASSWORD = 'victor-admin';
 
 const SUPABASE_URL = 'https://dlucexekstfahyhefwhz.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_sYXRXxUI8eY5QoUEHEpW-g_Tgg49Nmt';
-const ADMIN_PASSWORD = 'victor-admin';
-const MAX_SIZE_MB = 5;
+const BUCKET = 'stills';
 
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const uploadBtn = document.getElementById('upload');
+const fileInput = document.getElementById('file');
 const gallery = document.getElementById('gallery');
-const input = document.getElementById('fileInput');
-const trigger = document.getElementById('adminTrigger');
 
-/* ================= ADMIN AUTH ================= */
+let unlocked = localStorage.getItem('stills-admin') === 'yes';
 
-let isAdmin = false;
-
-trigger.onclick = () => {
-  const pass = prompt('password');
-  if(pass === ADMIN_PASSWORD){
-    isAdmin = true;
-    input.click();
+uploadBtn.onclick = () => {
+  if (!unlocked) {
+    const p = prompt('password');
+    if (p === PASSWORD) {
+      localStorage.setItem('stills-admin','yes');
+      unlocked = true;
+    } else {
+      return;
+    }
   }
+  fileInput.click();
 };
 
-/* ================= LOAD STILLS ================= */
+fileInput.onchange = async () => {
+  for (const file of fileInput.files) {
+    const name = Date.now() + '-' + file.name;
+    await sb.storage.from(BUCKET).upload(name, file);
+  }
+  fileInput.value = '';
+  load();
+};
 
-async function loadImages(){
-  const { data, error } = await supabase
-    .storage.from('stills')
-    .list('', { limit: 200, sortBy:{ column:'created_at', order:'desc' } });
-
-  if(error) return;
-
+async function load(){
+  const { data } = await sb.storage.from(BUCKET).list('', { limit:200, sortBy:{column:'created_at',order:'desc'} });
   gallery.innerHTML = '';
-  data.forEach(file=>{
+  data.forEach(f=>{
+    const { data:url } = sb.storage.from(BUCKET).getPublicUrl(f.name);
     const img = document.createElement('img');
-    img.src = `${SUPABASE_URL}/storage/v1/object/public/stills/${file.name}`;
+    img.src = url.publicUrl;
     gallery.appendChild(img);
   });
 }
 
-loadImages();
-
-/* ================= UPLOAD ================= */
-
-input.onchange = async () => {
-  if(!isAdmin) return;
-
-  for(const file of input.files){
-    if(file.size > MAX_SIZE_MB * 1024 * 1024) continue;
-
-    const name = `${Date.now()}-${file.name}`;
-
-    await supabase.storage
-      .from('stills')
-      .upload(name, file, {
-        cacheControl:'3600',
-        upsert:false
-      });
-  }
-
-  input.value='';
-  loadImages();
-};
+load();
 </script>
 
 </body>
