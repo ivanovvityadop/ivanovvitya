@@ -24,10 +24,24 @@
       font-family: ui-sans-serif, system-ui;
     }
 
+    header{
+      max-width:var(--max);
+      margin:0 auto;
+      padding:18px var(--pad);
+    }
+
+    header a{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:12px;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+
     .wrap{
       max-width:var(--max);
       margin:0 auto;
-      padding:var(--pad);
+      padding:0 var(--pad) 60px;
     }
 
     h1{
@@ -35,7 +49,7 @@
       letter-spacing:.08em;
       text-transform:uppercase;
       opacity:.7;
-      margin:0 0 24px;
+      margin:24px 0;
     }
 
     .grid{
@@ -47,9 +61,10 @@
     img{
       width:100%;
       display:block;
+      background:#111;
     }
 
-    /* ADMIN ONLY */
+    /* ADMIN */
     #admin{
       display:none;
       margin-top:30px;
@@ -68,6 +83,10 @@
 </head>
 
 <body>
+  <header>
+    <a href="index.html">← Back</a>
+  </header>
+
   <div class="wrap">
     <h1>Stills</h1>
 
@@ -77,46 +96,87 @@
     <!-- ADMIN ONLY -->
     <div id="admin">
       <p style="margin:0 0 10px;opacity:.6">
-        Admin upload (only visible to you)
+        Upload stills (visible only to you)
       </p>
-      <input type="file" accept="image/*" multiple onchange="preview(event)">
+      <input type="file" accept="image/*" multiple id="upload">
     </div>
   </div>
 
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-  /* ============ ADMIN VISIBILITY ============ */
+  /* ================= CONFIG ================= */
+  const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+  const SUPABASE_KEY = 'YOUR_PUBLIC_ANON_KEY';
   const ADMIN_KEY = 'victor-admin';
 
-  if (localStorage.getItem('admin') === ADMIN_KEY) {
-    document.getElementById('admin').style.display = 'block';
-  }
-
-  // Run once in browser console on YOUR device:
-  // localStorage.setItem('admin','victor-admin'); location.reload();
-
-  /* ============ PUBLIC IMAGES ============ */
-  const images = [
-    'stills/01.jpg',
-    'stills/02.jpg',
-    'stills/03.jpg'
-  ];
+  const supabase = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
 
   const gallery = document.getElementById('gallery');
+  const admin = document.getElementById('admin');
+  const uploadInput = document.getElementById('upload');
 
-  images.forEach(src => {
-    const img = document.createElement('img');
-    img.src = src;
-    gallery.appendChild(img);
-  });
+  /* ================= ADMIN VISIBILITY ================= */
+  if (localStorage.getItem('admin') === ADMIN_KEY) {
+    admin.style.display = 'block';
+  }
 
-  /* ============ ADMIN PREVIEW (LOCAL ONLY) ============ */
-  function preview(e){
-    [...e.target.files].forEach(file => {
+  // Run ONCE on your device:
+  // localStorage.setItem('admin','victor-admin'); location.reload();
+
+  /* ================= LOAD IMAGES ================= */
+  async function loadImages(){
+    const { data, error } = await supabase
+      .storage
+      .from('stills')
+      .list('', {
+        limit: 100,
+        sortBy: { column: 'created_at', order: 'desc' }
+      });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    gallery.innerHTML = '';
+
+    data.forEach(file => {
+      const { data:url } = supabase
+        .storage
+        .from('stills')
+        .getPublicUrl(file.name);
+
       const img = document.createElement('img');
-      img.src = URL.createObjectURL(file);
-      gallery.prepend(img);
+      img.src = url.publicUrl;
+      gallery.appendChild(img);
     });
   }
+
+  loadImages();
+
+  /* ================= UPLOAD ================= */
+  uploadInput.addEventListener('change', async e => {
+    const files = [...e.target.files];
+
+    for (const file of files) {
+      const fileName = `${Date.now()}-${file.name}`;
+
+      const { error } = await supabase
+        .storage
+        .from('stills')
+        .upload(fileName, file);
+
+      if (error) {
+        console.error(error);
+      }
+    }
+
+    e.target.value = '';
+    loadImages();
+  });
 </script>
 </body>
 </html>
