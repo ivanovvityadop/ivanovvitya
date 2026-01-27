@@ -5,160 +5,214 @@
   <title>TrueScan Film Burn Collection</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Gumroad script -->
+  <!-- Gumroad -->
   <script src="https://gumroad.com/js/gumroad.js"></script>
 
   <style>
     body {
       margin: 0;
-      padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #0e0e0e;
-      color: #eaeaea;
-      line-height: 1.6;
+      background: #0d0d0d;
+      color: #e6e6e6;
     }
 
-    .container {
-      max-width: 900px;
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 80px 24px;
+      padding: 80px 32px;
     }
 
-    h1 {
-      font-size: 40px;
-      font-weight: 600;
-      margin-bottom: 16px;
+    /* TOP PRODUCT SECTION */
+    .product {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 64px;
     }
 
-    h2 {
-      font-size: 24px;
+    .media {
+      background: #111;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .media img {
+      width: 100%;
+      display: block;
+    }
+
+    .info h1 {
+      font-size: 36px;
       font-weight: 500;
-      margin-top: 48px;
-      margin-bottom: 16px;
+      margin: 0 0 16px;
     }
 
-    p {
-      font-size: 17px;
-      opacity: 0.9;
-      max-width: 720px;
+    .tagline {
+      font-size: 16px;
+      opacity: 0.8;
+      margin-bottom: 24px;
     }
 
     .price {
-      font-size: 22px;
-      margin: 24px 0;
-      font-weight: 500;
+      font-size: 20px;
+      margin-bottom: 24px;
     }
 
     .gumroad-button {
-      background: #ffffff;
-      color: #000000;
-      padding: 18px 32px;
-      font-size: 16px;
-      font-weight: 600;
-      text-decoration: none;
-      border-radius: 6px;
       display: inline-block;
-      margin-top: 24px;
-    }
-
-    .gumroad-button:hover {
-      opacity: 0.9;
+      background: #ffffff;
+      color: #000;
+      padding: 16px 32px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 15px;
     }
 
     .trust {
       margin-top: 12px;
-      font-size: 14px;
-      opacity: 0.7;
+      font-size: 13px;
+      opacity: 0.6;
+    }
+
+    /* DETAILS */
+    .details {
+      margin-top: 96px;
+      max-width: 820px;
+    }
+
+    .section {
+      margin-bottom: 56px;
+    }
+
+    .section h2 {
+      font-size: 22px;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    .section p,
+    .section li {
+      font-size: 16px;
+      line-height: 1.7;
+      opacity: 0.9;
     }
 
     ul {
       padding-left: 20px;
-      margin-top: 12px;
     }
 
     li {
       margin-bottom: 8px;
     }
 
-    .divider {
-      margin: 64px 0;
-      height: 1px;
-      background: rgba(255,255,255,0.1);
-    }
-
     .back {
-      margin-top: 64px;
+      margin-top: 80px;
       font-size: 14px;
       opacity: 0.6;
     }
 
-    .back a {
-      color: #eaeaea;
-      text-decoration: none;
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .product {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
+  <div class="page">
 
-    <h1>TrueScan Film Burn Collection</h1>
+    <!-- PRODUCT TOP -->
+    <section class="product">
 
-    <p>
-      A high-quality collection of real scanned film burn overlays.
-      Designed for filmmakers, editors, and motion designers who want
-      authentic analog texture without fake digital effects.
-    </p>
+      <!-- MEDIA -->
+      <div class="media">
+        <!-- Replace later with your actual preview image -->
+        <img src="/thumbs/filmburn-cover.jpg" alt="TrueScan Film Burn Collection">
+      </div>
 
-    <div class="price">
-      $ — Instant Digital Download
-    </div>
+      <!-- INFO -->
+      <div class="info">
+        <h1>TrueScan Film Burn Collection</h1>
 
-    <!-- Gumroad Buy Button -->
-    <a class="gumroad-button"
-       href="https://victorivanov3.gumroad.com/l/truescanfilmburncollection">
-       Buy Now
-    </a>
+        <div class="tagline">
+          Real scanned film burn overlays for authentic analog texture.
+        </div>
 
-    <div class="trust">
-      Secure checkout via Gumroad · Instant download · Commercial use allowed
-    </div>
+        <div class="price">
+          One-time purchase · Instant download
+        </div>
 
-    <div class="divider"></div>
+        <a class="gumroad-button"
+           href="https://victorivanov3.gumroad.com/l/truescanfilmburncollection">
+          Buy Now
+        </a>
 
-    <h2>What’s Included</h2>
-    <ul>
-      <li>Real scanned film burn overlays</li>
-      <li>High-resolution files</li>
-      <li>Ready for Premiere Pro, Resolve, Final Cut</li>
-      <li>Drag-and-drop workflow</li>
-      <li>Commercial use license</li>
-    </ul>
+        <div class="trust">
+          Secure checkout · Commercial use · No subscription
+        </div>
+      </div>
 
-    <h2>Who It’s For</h2>
-    <ul>
-      <li>Filmmakers & video editors</li>
-      <li>Commercial & social content creators</li>
-      <li>Music videos, reels, branded content</li>
-    </ul>
+    </section>
 
-    <h2>Compatibility</h2>
-    <ul>
-      <li>DaVinci Resolve</li>
-      <li>Adobe Premiere Pro</li>
-      <li>Final Cut Pro</li>
-      <li>Any editor supporting video overlays</li>
-    </ul>
+    <!-- DETAILS -->
+    <section class="details">
 
-    <div class="divider"></div>
+      <div class="section">
+        <h2>Description</h2>
+        <p>
+          TrueScan Film Burn Collection is a curated set of real film burn
+          overlays, scanned from physical film stock. Designed for filmmakers
+          and editors who want organic imperfections, light leaks, and burn
+          transitions without digital artifacts.
+        </p>
+      </div>
 
-    <p>
-      No subscriptions. No watermarks.  
-      Buy once — use forever.
-    </p>
+      <div class="section">
+        <h2>What’s Included</h2>
+        <ul>
+          <li>High-quality scanned film burn overlays</li>
+          <li>Multiple variations and burn intensities</li>
+          <li>Instant digital download</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Technical Details</h2>
+        <ul>
+          <li>High-resolution video files</li>
+          <li>Drag-and-drop workflow</li>
+          <li>No watermarks</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>Compatibility</h2>
+        <ul>
+          <li>DaVinci Resolve</li>
+          <li>Adobe Premiere Pro</li>
+          <li>Final Cut Pro</li>
+          <li>Any editor supporting video overlays</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h2>License</h2>
+        <p>
+          Royalty-free commercial license.  
+          Use in personal and paid client projects with no attribution required.
+        </p>
+      </div>
+
+    </section>
 
     <div class="back">
-      ← <a href="index.html">Back to portfolio</a>
+      ← <a href="/">Back to portfolio</a>
     </div>
 
   </div>
