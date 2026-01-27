@@ -9,11 +9,27 @@
   <script src="https://gumroad.com/js/gumroad.js"></script>
 
   <style>
+    :root {
+      --bg: #0d0d0d;
+      --fg: #e6e6e6;
+      --muted: #9a9a9a;
+      --card: #111;
+      --border: #1f1f1f;
+      --btn: #e6e6e6;
+      --btn-text: #0d0d0d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: #0d0d0d;
-      color: #e6e6e6;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
     }
 
     a {
@@ -27,260 +43,180 @@
       padding: 80px 32px;
     }
 
-    /* TOP PRODUCT SECTION */
     .product {
       display: grid;
       grid-template-columns: 1.1fr 0.9fr;
       gap: 64px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .product {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
     }
 
     .media {
-      background: #111;
+      background: var(--card);
       border-radius: 8px;
       overflow: hidden;
+      border: 1px solid var(--border);
     }
 
-    .media iframe {
+    .media img {
       width: 100%;
-      height: 420px;
-      border: none;
+      height: auto;
       display: block;
     }
 
     .info h1 {
       font-size: 36px;
       font-weight: 500;
-      margin: 0 0 16px;
+      margin: 0 0 12px;
+      letter-spacing: -0.02em;
     }
 
     .tagline {
       font-size: 16px;
-      opacity: 0.8;
-      margin-bottom: 24px;
+      color: var(--muted);
+      margin-bottom: 20px;
     }
 
-    .price {
-      font-size: 20px;
-      margin-bottom: 24px;
-    }
-
-    .gumroad-button {
-      display: inline-block;
-      background: #ffffff;
-      color: #000;
-      padding: 16px 32px;
-      border-radius: 6px;
-      font-weight: 600;
+    .meta {
       font-size: 15px;
+      margin-bottom: 28px;
     }
 
-    .trust {
-      margin-top: 12px;
-      font-size: 13px;
-      opacity: 0.6;
-    }
-
-    /* DETAILS */
-    .details {
-      margin-top: 96px;
-      max-width: 820px;
-    }
-
-    .section {
-      border-top: 1px solid rgba(255,255,255,0.08);
-      padding: 24px 0;
-    }
-
-    .collapse-toggle {
-      display: flex;
-      justify-content: space-between;
+    .buy {
+      display: inline-flex;
       align-items: center;
-      cursor: pointer;
-      user-select: none;
-      font-size: 20px;
+      justify-content: center;
+      padding: 14px 26px;
+      background: var(--btn);
+      color: var(--btn-text);
+      border-radius: 6px;
       font-weight: 500;
+      font-size: 16px;
+      margin-bottom: 14px;
     }
 
-    .collapse-toggle span {
-      font-size: 18px;
-      opacity: 0.6;
+    .sub {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .collapse {
+      margin-top: 48px;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+    }
+
+    .collapse button {
+      all: unset;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--muted);
     }
 
     .collapse-content {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.35s ease;
-    }
-
-    .collapse-content.open {
-      max-height: 800px;
-    }
-
-    .collapse-content p,
-    .collapse-content li {
-      font-size: 16px;
-      line-height: 1.7;
-      opacity: 0.9;
+      transition: max-height 0.4s ease;
       margin-top: 16px;
     }
 
-    ul {
-      padding-left: 20px;
+    .collapse-content.open {
+      max-height: 2000px;
     }
 
-    li {
+    .collapse-content p {
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0 0 16px;
+      color: var(--fg);
+    }
+
+    .collapse-content ul {
+      margin: 0 0 16px 18px;
+      padding: 0;
+    }
+
+    .collapse-content li {
       margin-bottom: 8px;
-    }
-
-    .back {
-      margin-top: 96px;
-      font-size: 14px;
-      opacity: 0.6;
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-      .product {
-        grid-template-columns: 1fr;
-      }
-
-      .media iframe {
-        height: 240px;
-      }
+      font-size: 15px;
     }
   </style>
 </head>
-
 <body>
   <div class="page">
-
-    <!-- PRODUCT TOP -->
-    <section class="product">
-
-      <!-- MEDIA (YouTube Embed) -->
+    <div class="product">
+      <!-- LEFT -->
       <div class="media">
-        <iframe
-          src="https://www.youtube.com/embed/qjwtYjvWIFY"
-          title="TrueScan Film Burn Collection Preview"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen>
-        </iframe>
+        <!-- REPLACE IMAGE PATH -->
+        <img src="thumbs/truescan-cover.jpg" alt="TrueScan Film Burn Collection" />
       </div>
 
-      <!-- INFO -->
+      <!-- RIGHT -->
       <div class="info">
         <h1>TrueScan Film Burn Collection</h1>
-
         <div class="tagline">
           Real scanned film burn overlays for authentic analog texture.
         </div>
 
-        <div class="price">
+        <div class="meta">
           One-time purchase · Instant download
         </div>
 
-        <a class="gumroad-button"
-           href="https://victorivanov3.gumroad.com/l/truescanfilmburncollection"
-           data-gumroad-overlay="true"
-           data-gumroad-single-product="true">
-          Buy Now
+        <a
+          class="buy gumroad-button"
+          href="https://victorivanov3.gumroad.com/l/truescanfilmburncollection"
+        >
+          Buy Now — Gumroad
         </a>
 
-        <div class="trust">
+        <div class="sub">
           Secure checkout · Commercial use · No subscription
         </div>
       </div>
-
-    </section>
-
-    <!-- DETAILS -->
-    <section class="details">
-
-      <div class="section">
-        <div class="collapse-toggle">
-          Description <span>+</span>
-        </div>
-        <div class="collapse-content">
-          <p>
-            TrueScan Film Burn Collection is a curated set of real film burn
-            overlays, scanned from physical film stock. Designed for filmmakers
-            and editors who want organic imperfections, light leaks, and burn
-            transitions without digital artifacts.
-          </p>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="collapse-toggle">
-          What’s Included <span>+</span>
-        </div>
-        <div class="collapse-content">
-          <ul>
-            <li>Real scanned film burn overlays</li>
-            <li>Multiple burn variations and intensities</li>
-            <li>High-quality digital files</li>
-            <li>Instant download after purchase</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="collapse-toggle">
-          Technical Details <span>+</span>
-        </div>
-        <div class="collapse-content">
-          <ul>
-            <li>High-resolution video overlays</li>
-            <li>Drag-and-drop workflow</li>
-            <li>No watermarks</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="collapse-toggle">
-          Compatibility <span>+</span>
-        </div>
-        <div class="collapse-content">
-          <ul>
-            <li>DaVinci Resolve</li>
-            <li>Adobe Premiere Pro</li>
-            <li>Final Cut Pro</li>
-            <li>Any editor supporting video overlays</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="collapse-toggle">
-          License <span>+</span>
-        </div>
-        <div class="collapse-content">
-          <p>
-            Royalty-free commercial license.  
-            Use in personal and paid client projects with no attribution required.
-          </p>
-        </div>
-      </div>
-
-    </section>
-
-    <div class="back">
-      ← <a href="/">Back to portfolio</a>
     </div>
 
+    <!-- SINGLE COLLAPSE -->
+    <div class="collapse">
+      <button id="toggle">Show details</button>
+
+      <div id="content" class="collapse-content">
+        <p>
+          TrueScan Film Burn Collection is a set of real, physically scanned
+          35mm film burn overlays designed for filmmakers and editors who want
+          organic, imperfect analog texture.
+        </p>
+
+        <ul>
+          <li>Real scanned film burns (not generated)</li>
+          <li>High-resolution overlays</li>
+          <li>Works in any NLE or compositor</li>
+          <li>Perfect for transitions, light leaks, texture</li>
+          <li>Commercial use allowed</li>
+        </ul>
+
+        <p>
+          Drag and drop over your footage, set blending mode, and adjust
+          opacity. No plugins, no subscriptions.
+        </p>
+      </div>
+    </div>
   </div>
 
-  <!-- COLLAPSE SCRIPT -->
   <script>
-    document.querySelectorAll(".collapse-toggle").forEach(toggle => {
-      toggle.addEventListener("click", () => {
-        const content = toggle.nextElementSibling;
-        const icon = toggle.querySelector("span");
+    const toggle = document.getElementById("toggle");
+    const content = document.getElementById("content");
 
-        content.classList.toggle("open");
-        icon.textContent = content.classList.contains("open") ? "−" : "+";
-      });
+    toggle.addEventListener("click", () => {
+      content.classList.toggle("open");
+      toggle.textContent = content.classList.contains("open")
+        ? "Hide details"
+        : "Show details";
     });
   </script>
 </body>
