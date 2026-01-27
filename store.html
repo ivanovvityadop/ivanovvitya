@@ -105,47 +105,6 @@
       font-size: 14px;
       color: var(--muted);
     }
-
-    .collapse {
-      margin-top: 48px;
-      border-top: 1px solid var(--border);
-      padding-top: 24px;
-    }
-
-    .collapse button {
-      all: unset;
-      cursor: pointer;
-      font-size: 14px;
-      color: var(--muted);
-    }
-
-    .collapse-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease;
-      margin-top: 16px;
-    }
-
-    .collapse-content.open {
-      max-height: 2000px;
-    }
-
-    .collapse-content p {
-      font-size: 15px;
-      line-height: 1.6;
-      margin: 0 0 16px;
-      color: var(--fg);
-    }
-
-    .collapse-content ul {
-      margin: 0 0 16px 18px;
-      padding: 0;
-    }
-
-    .collapse-content li {
-      margin-bottom: 8px;
-      font-size: 15px;
-    }
   </style>
 </head>
 <body>
@@ -153,13 +112,14 @@
     <div class="product">
       <!-- LEFT -->
       <div class="media">
-        <!-- REPLACE IMAGE PATH -->
+        <!-- replace image -->
         <img src="thumbs/truescan-cover.jpg" alt="TrueScan Film Burn Collection" />
       </div>
 
       <!-- RIGHT -->
       <div class="info">
         <h1>TrueScan Film Burn Collection</h1>
+
         <div class="tagline">
           Real scanned film burn overlays for authentic analog texture.
         </div>
@@ -180,44 +140,6 @@
         </div>
       </div>
     </div>
-
-    <!-- SINGLE COLLAPSE -->
-    <div class="collapse">
-      <button id="toggle">Show details</button>
-
-      <div id="content" class="collapse-content">
-        <p>
-          TrueScan Film Burn Collection is a set of real, physically scanned
-          35mm film burn overlays designed for filmmakers and editors who want
-          organic, imperfect analog texture.
-        </p>
-
-        <ul>
-          <li>Real scanned film burns (not generated)</li>
-          <li>High-resolution overlays</li>
-          <li>Works in any NLE or compositor</li>
-          <li>Perfect for transitions, light leaks, texture</li>
-          <li>Commercial use allowed</li>
-        </ul>
-
-        <p>
-          Drag and drop over your footage, set blending mode, and adjust
-          opacity. No plugins, no subscriptions.
-        </p>
-      </div>
-    </div>
   </div>
-
-  <script>
-    const toggle = document.getElementById("toggle");
-    const content = document.getElementById("content");
-
-    toggle.addEventListener("click", () => {
-      content.classList.toggle("open");
-      toggle.textContent = content.classList.contains("open")
-        ? "Hide details"
-        : "Show details";
-    });
-  </script>
 </body>
 </html>
