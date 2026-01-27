@@ -40,8 +40,10 @@
       overflow: hidden;
     }
 
-    .media img {
+    .media iframe {
       width: 100%;
+      height: 420px;
+      border: none;
       display: block;
     }
 
@@ -85,20 +87,41 @@
     }
 
     .section {
-      margin-bottom: 56px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 24px 0;
     }
 
-    .section h2 {
-      font-size: 22px;
+    .collapse-toggle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      font-size: 20px;
       font-weight: 500;
-      margin-bottom: 16px;
     }
 
-    .section p,
-    .section li {
+    .collapse-toggle span {
+      font-size: 18px;
+      opacity: 0.6;
+    }
+
+    .collapse-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+
+    .collapse-content.open {
+      max-height: 800px;
+    }
+
+    .collapse-content p,
+    .collapse-content li {
       font-size: 16px;
       line-height: 1.7;
       opacity: 0.9;
+      margin-top: 16px;
     }
 
     ul {
@@ -110,7 +133,7 @@
     }
 
     .back {
-      margin-top: 80px;
+      margin-top: 96px;
       font-size: 14px;
       opacity: 0.6;
     }
@@ -119,6 +142,10 @@
     @media (max-width: 900px) {
       .product {
         grid-template-columns: 1fr;
+      }
+
+      .media iframe {
+        height: 240px;
       }
     }
   </style>
@@ -130,10 +157,14 @@
     <!-- PRODUCT TOP -->
     <section class="product">
 
-      <!-- MEDIA -->
+      <!-- MEDIA (YouTube Embed) -->
       <div class="media">
-        <!-- Replace later with your actual preview image -->
-        <img src="/thumbs/filmburn-cover.jpg" alt="TrueScan Film Burn Collection">
+        <iframe
+          src="https://www.youtube.com/embed/qjwtYjvWIFY"
+          title="TrueScan Film Burn Collection Preview"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
       </div>
 
       <!-- INFO -->
@@ -149,7 +180,9 @@
         </div>
 
         <a class="gumroad-button"
-           href="https://victorivanov3.gumroad.com/l/truescanfilmburncollection">
+           href="https://victorivanov3.gumroad.com/l/truescanfilmburncollection"
+           data-gumroad-overlay="true"
+           data-gumroad-single-product="true">
           Buy Now
         </a>
 
@@ -164,49 +197,70 @@
     <section class="details">
 
       <div class="section">
-        <h2>Description</h2>
-        <p>
-          TrueScan Film Burn Collection is a curated set of real film burn
-          overlays, scanned from physical film stock. Designed for filmmakers
-          and editors who want organic imperfections, light leaks, and burn
-          transitions without digital artifacts.
-        </p>
+        <div class="collapse-toggle">
+          Description <span>+</span>
+        </div>
+        <div class="collapse-content">
+          <p>
+            TrueScan Film Burn Collection is a curated set of real film burn
+            overlays, scanned from physical film stock. Designed for filmmakers
+            and editors who want organic imperfections, light leaks, and burn
+            transitions without digital artifacts.
+          </p>
+        </div>
       </div>
 
       <div class="section">
-        <h2>What’s Included</h2>
-        <ul>
-          <li>High-quality scanned film burn overlays</li>
-          <li>Multiple variations and burn intensities</li>
-          <li>Instant digital download</li>
-        </ul>
+        <div class="collapse-toggle">
+          What’s Included <span>+</span>
+        </div>
+        <div class="collapse-content">
+          <ul>
+            <li>Real scanned film burn overlays</li>
+            <li>Multiple burn variations and intensities</li>
+            <li>High-quality digital files</li>
+            <li>Instant download after purchase</li>
+          </ul>
+        </div>
       </div>
 
       <div class="section">
-        <h2>Technical Details</h2>
-        <ul>
-          <li>High-resolution video files</li>
-          <li>Drag-and-drop workflow</li>
-          <li>No watermarks</li>
-        </ul>
+        <div class="collapse-toggle">
+          Technical Details <span>+</span>
+        </div>
+        <div class="collapse-content">
+          <ul>
+            <li>High-resolution video overlays</li>
+            <li>Drag-and-drop workflow</li>
+            <li>No watermarks</li>
+          </ul>
+        </div>
       </div>
 
       <div class="section">
-        <h2>Compatibility</h2>
-        <ul>
-          <li>DaVinci Resolve</li>
-          <li>Adobe Premiere Pro</li>
-          <li>Final Cut Pro</li>
-          <li>Any editor supporting video overlays</li>
-        </ul>
+        <div class="collapse-toggle">
+          Compatibility <span>+</span>
+        </div>
+        <div class="collapse-content">
+          <ul>
+            <li>DaVinci Resolve</li>
+            <li>Adobe Premiere Pro</li>
+            <li>Final Cut Pro</li>
+            <li>Any editor supporting video overlays</li>
+          </ul>
+        </div>
       </div>
 
       <div class="section">
-        <h2>License</h2>
-        <p>
-          Royalty-free commercial license.  
-          Use in personal and paid client projects with no attribution required.
-        </p>
+        <div class="collapse-toggle">
+          License <span>+</span>
+        </div>
+        <div class="collapse-content">
+          <p>
+            Royalty-free commercial license.  
+            Use in personal and paid client projects with no attribution required.
+          </p>
+        </div>
       </div>
 
     </section>
@@ -216,5 +270,18 @@
     </div>
 
   </div>
+
+  <!-- COLLAPSE SCRIPT -->
+  <script>
+    document.querySelectorAll(".collapse-toggle").forEach(toggle => {
+      toggle.addEventListener("click", () => {
+        const content = toggle.nextElementSibling;
+        const icon = toggle.querySelector("span");
+
+        content.classList.toggle("open");
+        icon.textContent = content.classList.contains("open") ? "−" : "+";
+      });
+    });
+  </script>
 </body>
 </html>
