@@ -1,2 +1,0 @@
-# ivanovvitya
-index.html
