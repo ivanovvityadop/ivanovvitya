@@ -3,8 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Victor Ivanov — Director of Photography based in Tokyo.">
+  <meta
+    name="description"
+    content="Victor Ivanov — Director of Photography based in Tokyo."
+  >
   <meta name="theme-color" content="#111111">
+
   <title>Victor Ivanov — Director of Photography</title>
 
   <link rel="prefetch" href="stills.html">
@@ -28,7 +32,11 @@
       }
 
       if (returning) {
-        history.replaceState(null, "", location.pathname + location.hash);
+        history.replaceState(
+          null,
+          "",
+          location.pathname + location.hash
+        );
       }
     })();
   </script>
@@ -233,6 +241,7 @@
       align-items: center;
       gap: 20px;
       padding: 0 22px;
+      overflow-x: auto;
       background: rgba(17, 17, 17, 0.88);
       border-bottom: 1px solid var(--line);
       backdrop-filter: blur(12px);
@@ -243,6 +252,7 @@
       color: #666;
       font-size: 10px;
       letter-spacing: 0.12em;
+      white-space: nowrap;
       text-transform: uppercase;
     }
 
@@ -277,7 +287,8 @@
       display: none;
     }
 
-    .work-grid.has-focus .project:not(:hover):not(:focus-visible) {
+    .work-grid.has-focus
+    .project:not(:hover):not(:focus-visible) {
       opacity: 0.4;
     }
 
@@ -288,8 +299,18 @@
       height: 100%;
       object-fit: cover;
       filter: none;
-      transform: none;
-      transition: opacity 0.5s ease;
+      transform: scale(1);
+      transition:
+        transform 0.8s var(--ease),
+        opacity 0.5s ease;
+      will-change: transform;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .project:hover .project-media,
+      .project:focus-visible .project-media {
+        transform: scale(1.035);
+      }
     }
 
     .project:focus-visible {
@@ -327,7 +348,9 @@
       letter-spacing: 0.12em;
       opacity: 0;
       transform: translateY(-6px);
-      transition: 0.4s var(--ease);
+      transition:
+        opacity 0.4s var(--ease),
+        transform 0.4s var(--ease);
     }
 
     .project-info {
@@ -340,7 +363,9 @@
       align-items: end;
       opacity: 0;
       transform: translateY(12px);
-      transition: 0.45s var(--ease);
+      transition:
+        opacity 0.45s var(--ease),
+        transform 0.45s var(--ease);
     }
 
     .project:hover .project-info,
@@ -589,7 +614,6 @@
 
       .filters {
         padding: 0 16px;
-        overflow-x: auto;
       }
 
       .filters .label {
@@ -607,7 +631,7 @@
 
       .project-media {
         filter: none;
-        transform: none;
+        transform: scale(1);
       }
 
       .project-shade {
@@ -620,7 +644,8 @@
         transform: none;
       }
 
-      .work-grid.has-focus .project:not(:hover):not(:focus-visible) {
+      .work-grid.has-focus
+      .project:not(:hover):not(:focus-visible) {
         opacity: 1;
       }
     }
@@ -690,14 +715,16 @@
       }
 
       .project-media {
-        transform: none !important;
+        transform: scale(1) !important;
       }
     }
   </style>
 </head>
 
 <body>
-  <a class="skip-link" href="#work">Skip to work</a>
+  <a class="skip-link" href="#work">
+    Skip to work
+  </a>
 
   <div class="splash" aria-hidden="true">
     <div class="splash-name">
@@ -712,13 +739,26 @@
   </div>
 
   <header class="header">
-    <a class="brand" href="#work" aria-label="Victor Ivanov, work">
+    <a
+      class="brand"
+      href="#work"
+      aria-label="Victor Ivanov, work"
+    >
       Victor Ivanov
     </a>
 
     <nav class="nav" aria-label="Main navigation">
-      <a class="active" href="#work" aria-current="page">Motion</a>
-      <a href="stills.html">Stills</a>
+      <a
+        class="active"
+        href="#work"
+        aria-current="page"
+      >
+        Motion
+      </a>
+
+      <a href="stills.html">
+        Stills
+      </a>
 
       <button
         class="nav-secondary"
@@ -739,22 +779,40 @@
   </header>
 
   <main>
-    <div class="filters" aria-label="Filter projects">
-      <span class="label">Selected works — 2022–2026</span>
+    <div
+      class="filters"
+      aria-label="Filter projects"
+    >
+      <span class="label">
+        Selected works — 2022–2026
+      </span>
 
-      <button class="active" type="button" data-filter="All">
+      <button
+        class="active"
+        type="button"
+        data-filter="All"
+      >
         All
       </button>
 
-      <button type="button" data-filter="Commercial">
+      <button
+        type="button"
+        data-filter="Commercial"
+      >
         Commercial
       </button>
 
-      <button type="button" data-filter="Music Film">
+      <button
+        type="button"
+        data-filter="Music Film"
+      >
         Music
       </button>
 
-      <button type="button" data-filter="Editorial">
+      <button
+        type="button"
+        data-filter="Editorial"
+      >
         Editorial
       </button>
     </div>
@@ -765,12 +823,18 @@
       aria-label="Selected projects"
     ></section>
 
-    <footer class="footer" id="contact">
+    <footer
+      class="footer"
+      id="contact"
+    >
       <div class="footer-kicker">
         Based in Tokyo
       </div>
 
-      <a class="footer-mail" href="mailto:victor@push.xyz">
+      <a
+        class="footer-mail"
+        href="mailto:victor@push.xyz"
+      >
         Let’s make
         <span>something.</span>
       </a>
@@ -811,7 +875,10 @@
   >
     <div class="modal-inner">
       <div class="modal-bar">
-        <div class="modal-title" id="modal-title"></div>
+        <div
+          class="modal-title"
+          id="modal-title"
+        ></div>
 
         <button
           class="modal-close"
@@ -842,35 +909,40 @@
         category: "Commercial",
         year: "2025",
         media: "thumbs/11.BEATSMIHO.jpg",
-        embed: "https://player.vimeo.com/video/1023895414?autoplay=1&title=0&byline=0&portrait=0"
+        embed:
+          "https://player.vimeo.com/video/1023895414?autoplay=1&title=0&byline=0&portrait=0"
       },
       {
         title: "Jeshi — Inside Out",
         category: "Music Film",
         year: "2023",
         media: "thumbs/01.jpg",
-        embed: "https://player.vimeo.com/video/893163017?autoplay=1&title=0&byline=0&portrait=0"
+        embed:
+          "https://player.vimeo.com/video/893163017?autoplay=1&title=0&byline=0&portrait=0"
       },
       {
         title: "Arlo Parks — Purple Phase",
         category: "Music Film",
         year: "2023",
         media: "thumbs/02.jpg",
-        embed: "https://player.vimeo.com/video/873990921?autoplay=1&title=0&byline=0&portrait=0"
+        embed:
+          "https://player.vimeo.com/video/873990921?autoplay=1&title=0&byline=0&portrait=0"
       },
       {
         title: "Tomorrow Is Today",
         category: "Editorial",
         year: "2023",
         media: "thumbs/03.jpg",
-        embed: "https://player.vimeo.com/video/873997023?autoplay=1&title=0&byline=0&portrait=0"
+        embed:
+          "https://player.vimeo.com/video/873997023?autoplay=1&title=0&byline=0&portrait=0"
       },
       {
         title: "Miso Extra — Right Here",
         category: "Music Film",
         year: "2024",
         media: "thumbs/14MISO.jpg",
-        embed: "https://www.youtube.com/embed/wgI1OiKwE0A?autoplay=1&rel=0"
+        embed:
+          "https://www.youtube.com/embed/wgI1OiKwE0A?autoplay=1&rel=0"
       },
       {
         title: "Uniqlo — Gifts for All",
@@ -878,14 +950,16 @@
         year: "2024",
         media: "thumbs/13.UNIQLO.mp4",
         video: true,
-        embed: "https://www.youtube.com/embed/0j5cAMrWb6w?autoplay=1&rel=0"
+        embed:
+          "https://www.youtube.com/embed/0j5cAMrWb6w?autoplay=1&rel=0"
       },
       {
         title: "Jacob Collier — Little Blue",
         category: "Music Film",
         year: "2023",
         media: "thumbs/04.jpg",
-        embed: "https://player.vimeo.com/video/874000916?autoplay=1&title=0&byline=0&portrait=0"
+        embed:
+          "https://player.vimeo.com/video/874000916?autoplay=1&title=0&byline=0&portrait=0"
       },
       {
         title: "Rauw Alejandro × Crocs",
@@ -893,64 +967,74 @@
         year: "2024",
         media: "thumbs/09RAUW_1.mp4",
         video: true,
-        embed: "https://www.youtube.com/embed/5zpYEeFPwjM?autoplay=1&rel=0"
+        embed:
+          "https://www.youtube.com/embed/5zpYEeFPwjM?autoplay=1&rel=0"
       },
       {
         title: "Xamiya — Monster",
         category: "Music Film",
         year: "2024",
         media: "thumbs/05XAMIYAMONSTER.jpg",
-        embed: "https://www.youtube.com/embed/LbA3vdTyC3c?autoplay=1&rel=0"
+        embed:
+          "https://www.youtube.com/embed/LbA3vdTyC3c?autoplay=1&rel=0"
       },
       {
         title: "Beats — Defy The Noise",
         category: "Commercial",
         year: "2022",
         media: "thumbs/12.BEATSAK.jpg",
-        embed: "https://player.vimeo.com/video/774727914?autoplay=1&title=0&byline=0&portrait=0"
+        embed:
+          "https://player.vimeo.com/video/774727914?autoplay=1&title=0&byline=0&portrait=0"
       },
       {
         title: "OnePlus Buds 4",
         category: "Commercial",
         year: "2025",
         media: "thumbs/06ONEPLUS.jpg",
-        embed: "https://www.youtube.com/embed/-L5Z-4t3RLA?autoplay=1&rel=0"
+        embed:
+          "https://www.youtube.com/embed/-L5Z-4t3RLA?autoplay=1&rel=0"
       },
       {
         title: "Fuku Wa Uchi Oni Wa Soto",
         category: "Music Film",
         year: "2025",
         media: "thumbs/07JCKMV.jpg",
-        embed: "https://www.youtube.com/embed/TLxa-jEgAgY?autoplay=1&rel=0"
+        embed:
+          "https://www.youtube.com/embed/TLxa-jEgAgY?autoplay=1&rel=0"
       },
       {
         title: "Billie Eilish × VERBAL",
         category: "Editorial",
         year: "2024",
         media: "thumbs/08BILLECOMPLEX.jpg",
-        embed: "https://www.youtube.com/embed/7OU3EyCXCso?autoplay=1&rel=0&start=329"
+        embed:
+          "https://www.youtube.com/embed/7OU3EyCXCso?autoplay=1&rel=0&start=329"
       },
       {
         title: "July Suitcases",
         category: "Commercial",
         year: "2024",
         media: "thumbs/JULY.jpg",
-        embed: "https://www.youtube.com/embed/XNMsvl5PykQ?autoplay=1&rel=0"
+        embed:
+          "https://www.youtube.com/embed/XNMsvl5PykQ?autoplay=1&rel=0"
       },
       {
         title: "American Tourister",
         category: "Commercial",
         year: "2024",
         media: "thumbs/AMERICAN.jpg",
-        embed: "https://www.youtube.com/embed/R4BPaxrzkDQ?autoplay=1&rel=0"
+        embed:
+          "https://www.youtube.com/embed/R4BPaxrzkDQ?autoplay=1&rel=0"
       }
     ];
 
-    const $ = (selector) => document.querySelector(selector);
+    const $ = (selector) =>
+      document.querySelector(selector);
 
     const grid = $("#work");
 
-    const localPreview = location.protocol === "file:";
+    const localPreview =
+      location.protocol === "file:";
 
     const assetURL = (path) => {
       if (localPreview) {
@@ -982,10 +1066,14 @@
         media.loop = true;
         media.playsInline = true;
         media.preload = "metadata";
-        media.setAttribute("aria-label", project.title);
+        media.setAttribute(
+          "aria-label",
+          project.title
+        );
       } else {
         media.alt = project.title;
-        media.loading = index < 6 ? "eager" : "lazy";
+        media.loading =
+          index < 6 ? "eager" : "lazy";
       }
 
       media.addEventListener("error", () => {
@@ -1019,31 +1107,50 @@
       grid.append(card);
     });
 
-    grid.addEventListener("pointerover", (event) => {
-      if (event.target.closest(".project")) {
-        grid.classList.add("has-focus");
+    grid.addEventListener(
+      "pointerover",
+      (event) => {
+        if (event.target.closest(".project")) {
+          grid.classList.add("has-focus");
+        }
       }
-    });
+    );
 
-    grid.addEventListener("pointerleave", () => {
-      grid.classList.remove("has-focus");
-    });
+    grid.addEventListener(
+      "pointerleave",
+      () => {
+        grid.classList.remove("has-focus");
+      }
+    );
 
-    document.querySelectorAll(".filters button").forEach((button) => {
-      button.addEventListener("click", () => {
-        document.querySelectorAll(".filters button").forEach((item) => {
-          item.classList.toggle("active", item === button);
-        });
+    document
+      .querySelectorAll(".filters button")
+      .forEach((button) => {
+        button.addEventListener("click", () => {
+          document
+            .querySelectorAll(".filters button")
+            .forEach((item) => {
+              item.classList.toggle(
+                "active",
+                item === button
+              );
+            });
 
-        document.querySelectorAll(".project").forEach((card) => {
-          const shouldHide =
-            button.dataset.filter !== "All" &&
-            card.dataset.category !== button.dataset.filter;
+          document
+            .querySelectorAll(".project")
+            .forEach((card) => {
+              const shouldHide =
+                button.dataset.filter !== "All" &&
+                card.dataset.category !==
+                  button.dataset.filter;
 
-          card.classList.toggle("hidden", shouldHide);
+              card.classList.toggle(
+                "hidden",
+                shouldHide
+              );
+            });
         });
       });
-    });
 
     const modal = $("#modal");
     const player = $("#player");
@@ -1054,10 +1161,16 @@
       previousFocus = document.activeElement;
 
       player.src = card.dataset.embed;
-      $("#modal-title").textContent = card.dataset.title;
+
+      $("#modal-title").textContent =
+        card.dataset.title;
 
       modal.classList.add("open");
-      modal.setAttribute("aria-hidden", "false");
+
+      modal.setAttribute(
+        "aria-hidden",
+        "false"
+      );
 
       document.body.classList.add("locked");
 
@@ -1066,9 +1179,15 @@
 
     const closeModal = () => {
       modal.classList.remove("open");
-      modal.setAttribute("aria-hidden", "true");
 
-      document.body.classList.remove("locked");
+      modal.setAttribute(
+        "aria-hidden",
+        "true"
+      );
+
+      document.body.classList.remove(
+        "locked"
+      );
 
       player.src = "";
 
@@ -1078,7 +1197,8 @@
     };
 
     grid.addEventListener("click", (event) => {
-      const card = event.target.closest(".project");
+      const card =
+        event.target.closest(".project");
 
       if (!card) {
         return;
@@ -1088,25 +1208,35 @@
       openModal(card);
     });
 
-    $("#modal-close").addEventListener("click", closeModal);
+    $("#modal-close").addEventListener(
+      "click",
+      closeModal
+    );
 
-    modal.addEventListener("click", (event) => {
-      if (event.target === modal) {
-        closeModal();
+    modal.addEventListener(
+      "click",
+      (event) => {
+        if (event.target === modal) {
+          closeModal();
+        }
       }
-    });
+    );
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key !== "Escape") {
-        return;
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key !== "Escape") {
+          return;
+        }
+
+        if (modal.classList.contains("open")) {
+          closeModal();
+        }
       }
+    );
 
-      if (modal.classList.contains("open")) {
-        closeModal();
-      }
-    });
-
-    $("#year").textContent = new Date().getFullYear();
+    $("#year").textContent =
+      new Date().getFullYear();
   </script>
 </body>
 </html>
