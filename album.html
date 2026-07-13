@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111111">
+  <title>Album — Victor Ivanov</title>
+  <link rel="prefetch" href="index-v2.html">
+  <link rel="stylesheet" href="stills.css">
+</head>
+<body>
+  <header class="header">
+    <a class="brand" href="index-v2.html?return=stills">Victor Ivanov</a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index-v2.html?return=stills">Motion</a>
+      <a class="active" href="stills.html">Stills</a>
+      <button class="nav-secondary" type="button" data-panel-open="about-panel">About</button>
+      <button class="nav-secondary" type="button" data-panel-open="contact-panel">Contact</button>
+    </nav>
+  </header>
+
+  <main class="page" id="page">
+    <section class="album-head" id="album-head">
+      <a class="back-link" href="stills.html">← All albums</a>
+      <div class="album-head-row">
+        <div><div class="eyebrow" id="album-year"></div><h1 id="album-title"></h1></div>
+        <p class="album-description" id="album-description"></p>
+      </div>
+    </section>
+    <section class="photo-grid" id="photo-grid" aria-label="Album photographs"></section>
+  </main>
+
+  <footer class="footer"><a href="stills.html">← All albums</a><span>© <span id="year"></span> Victor Ivanov</span></footer>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Image viewer">
+    <button class="lightbox-arrow" id="previous" type="button" aria-label="Previous image">←</button>
+    <div class="lightbox-stage">
+      <button class="lightbox-close" id="close" type="button">Close ×</button>
+      <div id="lightbox-media"></div>
+      <div class="lightbox-count" id="lightbox-count"></div>
+    </div>
+    <button class="lightbox-arrow" id="next" type="button" aria-label="Next image">→</button>
+  </div>
+
+  <script src="albums-data.js"></script>
+  <script src="site-panels.js"></script>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const album = window.STILL_ALBUMS.find((item) => item.slug === params.get("album")) || window.STILL_ALBUMS[0];
+    const grid = document.querySelector("#photo-grid");
+    const lightbox = document.querySelector("#lightbox");
+    const localPreview = location.protocol === "file:";
+    const assetURL = (path) => localPreview ? `https://ivanovvitya.site/${path}` : path;
+    let activeImage = 0;
+    let previousFocus = null;
+
+    const createMedia = (photo, className) => {
+      const media = document.createElement(photo.type === "video" ? "video" : "img");
+      media.className = className;
+      media.src = assetURL(photo.src);
+      if (photo.type === "video") {
+        media.autoplay = true;
+        media.muted = true;
+        media.loop = true;
+        media.playsInline = true;
+        media.setAttribute("aria-label", photo.alt);
+      } else {
+        media.alt = photo.alt;
+        media.loading = "lazy";
+      }
+      return media;
+    };
+
+    document.title = `${album.title} — Victor Ivanov`;
+    document.querySelector("#album-title").textContent = album.title;
+    document.querySelector("#album-year").textContent = `${album.year} — ${album.photos.length} images`;
+    document.querySelector("#album-description").textContent = album.description;
+
+    album.photos.forEach((photo, index) => {
+      const button = document.createElement("button");
+      button.className = "photo-card";
+      button.type = "button";
+      button.setAttribute("aria-label", `Open ${photo.alt}`);
+      button.append(createMedia(photo, "photo-media"));
+      button.insertAdjacentHTML("beforeend", `<span class="photo-number">${String(index + 1).padStart(2, "0")}</span>`);
+      button.addEventListener("click", () => openLightbox(index, button));
+      grid.append(button);
+    });
+
+    const renderLightbox = () => {
+      const host = document.querySelector("#lightbox-media");
+      host.innerHTML = "";
+      const media = createMedia(album.photos[activeImage], "lightbox-media");
+      if (media.tagName === "IMG") media.loading = "eager";
+      host.append(media);
+      document.querySelector("#lightbox-count").textContent = `${String(activeImage + 1).padStart(2, "0")} / ${String(album.photos.length).padStart(2, "0")}`;
+    };
+    const openLightbox = (index, source) => {
+      activeImage = index;
+      previousFocus = source;
+      renderLightbox();
+      lightbox.classList.add("open");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.classList.add("locked");
+      document.querySelector("#close").focus();
+    };
+    const closeLightbox = () => {
+      lightbox.classList.remove("open");
+      lightbox.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("locked");
+      if (previousFocus) previousFocus.focus();
+    };
+    const move = (amount) => {
+      activeImage = (activeImage + amount + album.photos.length) % album.photos.length;
+      renderLightbox();
+    };
+    document.querySelector("#previous").addEventListener("click", () => move(-1));
+    document.querySelector("#next").addEventListener("click", () => move(1));
+    document.querySelector("#close").addEventListener("click", closeLightbox);
+    lightbox.addEventListener("click", (event) => { if (event.target === lightbox) closeLightbox(); });
+    document.addEventListener("keydown", (event) => {
+      if (!lightbox.classList.contains("open")) return;
+      if (event.key === "Escape") closeLightbox();
+      if (event.key === "ArrowLeft") move(-1);
+      if (event.key === "ArrowRight") move(1);
+    });
+    document.querySelector("#year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

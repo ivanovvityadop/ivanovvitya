@@ -1,208 +1,100 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Stills — Victor Ivanov</title>
-
-<style>
-:root{
-  --bg:#000;
-  --fg:#f2f2f2;
-  --muted:rgba(255,255,255,.5);
-  --gap:16px;
-  --pad:26px;
-}
-
-*{ box-sizing:border-box; }
-
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--fg);
-  font-family: ui-sans-serif, system-ui, -apple-system;
-}
-
-header{
-  padding:18px var(--pad);
-}
-
-a{
-  color:var(--muted);
-  text-decoration:none;
-  font-size:12px;
-}
-
-main{
-  padding:0 var(--pad) 80px;
-}
-
-h1{
-  font-size:12px;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  opacity:.6;
-  margin:0 0 24px;
-}
-
-/* GRID */
-.grid{
-  width:100vw;
-  margin-left:calc(50% - 50vw);
-  column-count:3;
-  column-gap:var(--gap);
-}
-
-@media (max-width:1100px){
-  .grid{ column-count:2; }
-}
-
-@media (max-width:680px){
-  .grid{ column-count:1; }
-}
-
-.grid img{
-  width:100%;
-  display:block;
-  margin-bottom:var(--gap);
-  background:#111;
-  cursor:zoom-in;
-}
-
-/* FULLSCREEN VIEWER */
-#viewer{
-  position:fixed;
-  inset:0;
-  background:#000;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:100000;
-  cursor:zoom-out;
-}
-
-#viewer img{
-  max-width:100vw;
-  max-height:100vh;
-  object-fit:contain;
-}
-
-/* UPLOAD TRIGGER */
-#upload{
-  position:fixed;
-  bottom:12px;
-  left:12px;
-  font-family:monospace;
-  font-size:6px;
-  letter-spacing:.12em;
-  color:#ff3b3b;
-  opacity:.25;
-  cursor:pointer;
-  z-index:99999;
-}
-#upload:hover{opacity:.5}
-
-input[type=file]{display:none}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Still photography by Victor Ivanov.">
+  <meta name="theme-color" content="#111111">
+  <title>Stills — Victor Ivanov</title>
+  <link rel="prefetch" href="index-v2.html">
+  <link rel="stylesheet" href="stills.css">
 </head>
-
 <body>
+  <header class="header">
+    <a class="brand" href="index-v2.html?return=stills">Victor Ivanov</a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index-v2.html?return=stills">Motion</a>
+      <a class="active" href="stills.html" aria-current="page">Stills</a>
+      <button class="nav-secondary" type="button" data-panel-open="about-panel">About</button>
+      <button class="nav-secondary" type="button" data-panel-open="contact-panel">Contact</button>
+    </nav>
+  </header>
 
-<header>
-  <a href="index.html">← Back</a>
-</header>
+  <main class="page">
+    <section class="intro">
+      <div class="eyebrow">Personal photography</div>
+      <div class="intro-row">
+        <h1>Stills</h1>
+        <p class="intro-copy">Albums, observations and photographs made between productions. Move across a cover to look inside.</p>
+      </div>
+    </section>
+    <section class="albums-grid" id="albums-grid" aria-label="Photography albums"></section>
+  </main>
 
-<main>
-  <h1>Stills</h1>
-  <div class="grid" id="gallery"></div>
-</main>
+  <footer class="footer"><span>Tokyo, Japan</span><span>© <span id="year"></span> Victor Ivanov</span></footer>
+  <div class="cursor" id="cursor" aria-hidden="true">Open album</div>
 
-<div id="upload">[ UPLOAD STILLS ]</div>
-<input id="file" type="file" accept="image/*" multiple>
+  <script src="albums-data.js"></script>
+  <script src="site-panels.js"></script>
+  <script>
+    const grid = document.querySelector("#albums-grid");
+    const cursor = document.querySelector("#cursor");
+    const localPreview = location.protocol === "file:";
+    const assetURL = (path) => localPreview ? `https://ivanovvitya.site/${path}` : path;
 
-<!-- FULLSCREEN VIEWER -->
-<div id="viewer">
-  <img id="viewerImg">
-</div>
+    const mediaElement = (photo, className) => {
+      const media = document.createElement(photo.type === "video" ? "video" : "img");
+      media.className = className;
+      media.src = assetURL(photo.src);
+      if (photo.type === "video") {
+        media.autoplay = true;
+        media.muted = true;
+        media.loop = true;
+        media.playsInline = true;
+        media.setAttribute("aria-label", photo.alt);
+      } else {
+        media.alt = photo.alt;
+        media.loading = "lazy";
+      }
+      return media;
+    };
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-const PASSWORD = 'victor-admin';
+    window.STILL_ALBUMS.forEach((album) => {
+      const card = document.createElement("a");
+      card.className = "album-card";
+      card.href = `album.html?album=${encodeURIComponent(album.slug)}`;
+      card.setAttribute("aria-label", `${album.title}, ${album.year}, ${album.photos.length} photographs`);
+      const previews = album.photos.slice(0, 3);
+      previews.forEach((photo, index) => {
+        const media = mediaElement(photo, `album-preview${index === 0 ? " active" : ""}`);
+        card.append(media);
+      });
+      card.insertAdjacentHTML("beforeend", `
+        <span class="album-shade"></span>
+        <span class="album-dots">${previews.map((_, index) => `<i class="album-dot${index === 0 ? " active" : ""}"></i>`).join("")}</span>
+        <span class="album-info">
+          <h2 class="album-title">${album.title}</h2>
+          <span class="album-meta">${album.year}<br>${album.photos.length} images</span>
+        </span>`);
+      card.addEventListener("pointermove", (event) => {
+        const rect = card.getBoundingClientRect();
+        const index = Math.min(previews.length - 1, Math.floor(((event.clientX - rect.left) / rect.width) * previews.length));
+        card.querySelectorAll(".album-preview").forEach((item, itemIndex) => item.classList.toggle("active", itemIndex === index));
+        card.querySelectorAll(".album-dot").forEach((item, itemIndex) => item.classList.toggle("active", itemIndex === index));
+      });
+      card.addEventListener("pointerleave", () => {
+        card.querySelectorAll(".album-preview").forEach((item, index) => item.classList.toggle("active", index === 0));
+        card.querySelectorAll(".album-dot").forEach((item, index) => item.classList.toggle("active", index === 0));
+      });
+      grid.append(card);
+    });
 
-const SUPABASE_URL = 'https://dlucexekstfahyhefwhz.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_sYXRXxUI8eY5QoUEHEpW-g_Tgg49Nmt';
-const BUCKET = 'stills';
-
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-const uploadBtn = document.getElementById('upload');
-const fileInput = document.getElementById('file');
-const gallery = document.getElementById('gallery');
-
-const viewer = document.getElementById('viewer');
-const viewerImg = document.getElementById('viewerImg');
-
-let unlocked = localStorage.getItem('stills-admin') === 'yes';
-
-/* UPLOAD */
-uploadBtn.onclick = () => {
-  if (!unlocked) {
-    const p = prompt('password');
-    if (p === PASSWORD) {
-      localStorage.setItem('stills-admin','yes');
-      unlocked = true;
-    } else return;
-  }
-  fileInput.click();
-};
-
-fileInput.onchange = async () => {
-  for (const file of fileInput.files) {
-    const name = Date.now() + '-' + file.name;
-    await sb.storage.from(BUCKET).upload(name, file);
-  }
-  fileInput.value = '';
-  load();
-};
-
-/* LOAD */
-async function load(){
-  const { data } = await sb.storage
-    .from(BUCKET)
-    .list('', { limit:200, sortBy:{column:'created_at',order:'desc'} });
-
-  gallery.innerHTML = '';
-
-  data.forEach(f=>{
-    if (f.name === '.emptyFolderPlaceholder') return;
-    const { data:url } = sb.storage.from(BUCKET).getPublicUrl(f.name);
-    const img = document.createElement('img');
-    img.src = url.publicUrl;
-    gallery.appendChild(img);
-  });
-}
-
-load();
-
-/* FULLSCREEN PREVIEW */
-gallery.addEventListener('click', e=>{
-  if (e.target.tagName !== 'IMG') return;
-  viewerImg.src = e.target.src;
-  viewer.style.display = 'flex';
-});
-
-viewer.addEventListener('click', ()=>{
-  viewer.style.display = 'none';
-  viewerImg.src = '';
-});
-
-document.addEventListener('keydown', e=>{
-  if (e.key === 'Escape') {
-    viewer.style.display = 'none';
-    viewerImg.src = '';
-  }
-});
-</script>
-
+    window.addEventListener("pointermove", (event) => {
+      cursor.style.left = `${event.clientX}px`;
+      cursor.style.top = `${event.clientY}px`;
+      cursor.classList.toggle("visible", Boolean(event.target.closest(".album-card")));
+    });
+    document.querySelector("#year").textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
