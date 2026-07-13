@@ -23,32 +23,3 @@ window.STILL_ALBUMS = [
       { src: "thumbs/14MISO.jpg", alt: "Tokyo Studies — frame 06" }
     ]
   },
-  {
-    slug: "people-places",
-    title: "People & Places",
-    year: "2023—2025",
-    description: "Portraits and fragments collected between productions.",
-    photos: [
-      { src: "thumbs/02.jpg", alt: "People & Places — frame 01" },
-      { src: "thumbs/14MISO.jpg", alt: "People & Places — frame 02" },
-      { src: "thumbs/01.jpg", alt: "People & Places — frame 03" },
-      { src: "thumbs/04.jpg", alt: "People & Places — frame 04" },
-      { src: "thumbs/09RAUW_1.mp4", type: "video", alt: "People & Places — moving frame 05" },
-      { src: "thumbs/03.jpg", alt: "People & Places — frame 06" }
-    ]
-  },
-  {
-    slug: "between-places",
-    title: "Between Places",
-    year: "2022—2025",
-    description: "Landscapes, transit and the spaces between destinations.",
-    photos: [
-      { src: "thumbs/JULY.jpg", alt: "Between Places — frame 01" },
-      { src: "thumbs/AMERICAN.jpg", alt: "Between Places — frame 02" },
-      { src: "thumbs/06ONEPLUS.jpg", alt: "Between Places — frame 03" },
-      { src: "thumbs/13.UNIQLO.mp4", type: "video", alt: "Between Places — moving frame 04" },
-      { src: "thumbs/03.jpg", alt: "Between Places — frame 05" },
-      { src: "thumbs/12.BEATSAK.jpg", alt: "Between Places — frame 06" }
-    ]
-  }
-];
