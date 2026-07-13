@@ -10,16 +10,47 @@
 */
 window.STILL_ALBUMS = [
   {
-    slug: "tokyo-studies",
-    title: "Tokyo Studies",
-    year: "2024—2025",
-    description: "Observations, colour and quiet moments around Tokyo.",
+    slug: "Purple",
+    title: "Purple",
+    year: "2025",
+    description: "",
     photos: [
-      { src: "thumbs/08BILLECOMPLEX.jpg", alt: "Tokyo Studies — frame 01" },
-      { src: "thumbs/11.BEATSMIHO.jpg", alt: "Tokyo Studies — frame 02" },
-      { src: "thumbs/12.BEATSAK.jpg", alt: "Tokyo Studies — frame 03" },
-      { src: "thumbs/07JCKMV.jpg", alt: "Tokyo Studies — frame 04" },
-      { src: "thumbs/05XAMIYAMONSTER.jpg", alt: "Tokyo Studies — frame 05" },
-      { src: "thumbs/14MISO.jpg", alt: "Tokyo Studies — frame 06" }
+      {
+        src: "preview/film01/07 LOMO PURPLE - 0002.jpeg",
+        alt: "Film 01 — photograph 01"
+      },
+      {
+        src: "preview/film01/07 LOMO PURPLE - 0007.jpeg",
+        alt: "Film 01 — photograph 02"
+      },
+      {
+        src: "preview/film01/07 LOMO PURPLE - 0008.jpeg",
+        alt: "Film 01 — photograph 03"
+      },
+      {
+        src: "preview/film01/07 LOMO PURPLE - 0009.jpeg",
+        alt: "Film 01 — photograph 04"
+      },
+      {
+        src: "preview/film01/07 LOMO PURPLE - 0015.jpeg",
+        alt: "Film 01 — photograph 05"
+      },
+      {
+        src: "preview/film01/07 LOMO PURPLE - 0016.jpeg",
+        alt: "Film 01 — photograph 06"
+      },
+      {
+        src: "preview/film01/07 LOMO PURPLE - 0032.jpeg",
+        alt: "Film 01 — photograph 07"
+      },
+      {
+        src: "preview/film01/07 LOMO PURPLE - 0038.jpeg",
+        alt: "Film 01 — photograph 08"
+      },
+      {
+        src: "preview/film01/07 LOMO PURPLE - 0040.jpeg",
+        alt: "Film 01 — photograph 09"
+      }
     ]
-  },
+  }
+];
