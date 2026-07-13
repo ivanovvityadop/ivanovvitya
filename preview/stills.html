@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Still photography by Victor Ivanov.">
+  <meta name="theme-color" content="#111111">
+  <title>Stills — Victor Ivanov</title>
+  <link rel="prefetch" href="index-v2.html">
+  <link rel="stylesheet" href="stills.css">
+</head>
+<body>
+  <header class="header">
+    <a class="brand" href="index-v2.html?return=stills">Victor Ivanov</a>
+    <nav class="nav" aria-label="Main navigation">
+      <a href="index-v2.html?return=stills">Motion</a>
+      <a class="active" href="stills.html" aria-current="page">Stills</a>
+      <button class="nav-secondary" type="button" data-panel-open="about-panel">About</button>
+      <button class="nav-secondary" type="button" data-panel-open="contact-panel">Contact</button>
+    </nav>
+  </header>
+
+  <main class="page">
+    <section class="intro">
+      <div class="eyebrow">Personal photography</div>
+      <div class="intro-row">
+        <h1>Stills</h1>
+        <p class="intro-copy">Albums, observations and photographs made between productions. Move across a cover to look inside.</p>
+      </div>
+    </section>
+    <section class="albums-grid" id="albums-grid" aria-label="Photography albums"></section>
+  </main>
+
+  <footer class="footer"><span>Tokyo, Japan</span><span>© <span id="year"></span> Victor Ivanov</span></footer>
+  <div class="cursor" id="cursor" aria-hidden="true">Open album</div>
+
+  <script src="albums-data.js"></script>
+  <script src="site-panels.js"></script>
+  <script>
+    const grid = document.querySelector("#albums-grid");
+    const cursor = document.querySelector("#cursor");
+    const localPreview = location.protocol === "file:";
+    const assetURL = (path) => localPreview ? `https://ivanovvitya.site/${path}` : `/${path.replace(/^\/+/, "")}`;
+
+    const mediaElement = (photo, className) => {
+      const media = document.createElement(photo.type === "video" ? "video" : "img");
+      media.className = className;
+      media.src = assetURL(photo.src);
+      if (photo.type === "video") {
+        media.autoplay = true;
+        media.muted = true;
+        media.loop = true;
+        media.playsInline = true;
+        media.setAttribute("aria-label", photo.alt);
+      } else {
+        media.alt = photo.alt;
+        media.loading = "lazy";
+      }
+      return media;
+    };
+
+    window.STILL_ALBUMS.forEach((album) => {
+      const card = document.createElement("a");
+      card.className = "album-card";
+      card.href = `album.html?album=${encodeURIComponent(album.slug)}`;
+      card.setAttribute("aria-label", `${album.title}, ${album.year}, ${album.photos.length} photographs`);
+      const previews = album.photos.slice(0, 3);
+      previews.forEach((photo, index) => {
+        const media = mediaElement(photo, `album-preview${index === 0 ? " active" : ""}`);
+        card.append(media);
+      });
+      card.insertAdjacentHTML("beforeend", `
+        <span class="album-shade"></span>
+        <span class="album-dots">${previews.map((_, index) => `<i class="album-dot${index === 0 ? " active" : ""}"></i>`).join("")}</span>
+        <span class="album-info">
+          <h2 class="album-title">${album.title}</h2>
+          <span class="album-meta">${album.year}<br>${album.photos.length} images</span>
+        </span>`);
+      card.addEventListener("pointermove", (event) => {
+        const rect = card.getBoundingClientRect();
+        const index = Math.min(previews.length - 1, Math.floor(((event.clientX - rect.left) / rect.width) * previews.length));
+        card.querySelectorAll(".album-preview").forEach((item, itemIndex) => item.classList.toggle("active", itemIndex === index));
+        card.querySelectorAll(".album-dot").forEach((item, itemIndex) => item.classList.toggle("active", itemIndex === index));
+      });
+      card.addEventListener("pointerleave", () => {
+        card.querySelectorAll(".album-preview").forEach((item, index) => item.classList.toggle("active", index === 0));
+        card.querySelectorAll(".album-dot").forEach((item, index) => item.classList.toggle("active", index === 0));
+      });
+      grid.append(card);
+    });
+
+    window.addEventListener("pointermove", (event) => {
+      cursor.style.left = `${event.clientX}px`;
+      cursor.style.top = `${event.clientY}px`;
+      cursor.classList.toggle("visible", Boolean(event.target.closest(".album-card")));
+    });
+    document.querySelector("#year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
