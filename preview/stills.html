@@ -29,6 +29,58 @@
     rel="stylesheet"
     href="stills.css"
   >
+
+  <style>
+    /*
+      Override the old custom cursor and reverse zoom
+      inside stills.css.
+    */
+
+    .album-card {
+      cursor: default;
+    }
+
+    .cursor {
+      display: none !important;
+    }
+
+    .album-preview {
+      opacity: 0;
+      filter: none;
+      transform: scale(1);
+      transition:
+        opacity 0.35s ease,
+        transform 0.8s var(--ease);
+      will-change: transform;
+    }
+
+    .album-preview.active {
+      opacity: 1;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .album-card:hover .album-preview,
+      .album-card:focus-visible .album-preview {
+        transform: scale(1.035);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .album-card {
+        cursor: default;
+      }
+
+      .album-preview {
+        transform: scale(1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .album-preview {
+        transform: scale(1) !important;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -36,6 +88,7 @@
     <a
       class="brand"
       href="index-v2.html?return=stills"
+      aria-label="Victor Ivanov, Motion"
     >
       Victor Ivanov
     </a>
@@ -98,7 +151,9 @@
   </main>
 
   <footer class="footer">
-    <span>Tokyo, Japan</span>
+    <span>
+      Tokyo, Japan
+    </span>
 
     <span>
       © <span id="year"></span> Victor Ivanov
@@ -109,7 +164,8 @@
   <script src="site-panels.js"></script>
 
   <script>
-    const grid = document.querySelector("#albums-grid");
+    const grid =
+      document.querySelector("#albums-grid");
 
     const localPreview =
       location.protocol === "file:";
@@ -122,12 +178,13 @@
       return `/${path.replace(/^\/+/, "")}`;
     };
 
-    const mediaElement = (photo, className) => {
-      const media = document.createElement(
-        photo.type === "video"
-          ? "video"
-          : "img"
-      );
+    const createMedia = (photo, className) => {
+      const media =
+        document.createElement(
+          photo.type === "video"
+            ? "video"
+            : "img"
+        );
 
       media.className = className;
       media.src = assetURL(photo.src);
@@ -169,7 +226,7 @@
         album.photos.slice(0, 3);
 
       previews.forEach((photo, index) => {
-        const media = mediaElement(
+        const media = createMedia(
           photo,
           `album-preview${index === 0 ? " active" : ""}`
         );
@@ -177,18 +234,20 @@
         card.append(media);
       });
 
+      const dots = previews
+        .map(
+          (_, index) =>
+            `<i class="album-dot${index === 0 ? " active" : ""}"></i>`
+        )
+        .join("");
+
       card.insertAdjacentHTML(
         "beforeend",
         `
           <span class="album-shade"></span>
 
           <span class="album-dots">
-            ${previews
-              .map(
-                (_, index) =>
-                  `<i class="album-dot${index === 0 ? " active" : ""}"></i>`
-              )
-              .join("")}
+            ${dots}
           </span>
 
           <span class="album-info">
@@ -204,63 +263,73 @@
         `
       );
 
+      const setActivePreview = (activeIndex) => {
+        card
+          .querySelectorAll(".album-preview")
+          .forEach((item, index) => {
+            item.classList.toggle(
+              "active",
+              index === activeIndex
+            );
+          });
+
+        card
+          .querySelectorAll(".album-dot")
+          .forEach((item, index) => {
+            item.classList.toggle(
+              "active",
+              index === activeIndex
+            );
+          });
+      };
+
       card.addEventListener(
         "pointermove",
         (event) => {
+          if (previews.length < 2) {
+            return;
+          }
+
           const rect =
             card.getBoundingClientRect();
 
-          const position =
+          const pointerPosition =
             (event.clientX - rect.left) /
             rect.width;
 
-          const previewIndex = Math.min(
+          const activeIndex = Math.min(
             previews.length - 1,
-            Math.floor(
-              position * previews.length
+            Math.max(
+              0,
+              Math.floor(
+                pointerPosition *
+                previews.length
+              )
             )
           );
 
-          card
-            .querySelectorAll(".album-preview")
-            .forEach((item, index) => {
-              item.classList.toggle(
-                "active",
-                index === previewIndex
-              );
-            });
-
-          card
-            .querySelectorAll(".album-dot")
-            .forEach((item, index) => {
-              item.classList.toggle(
-                "active",
-                index === previewIndex
-              );
-            });
+          setActivePreview(activeIndex);
         }
       );
 
       card.addEventListener(
         "pointerleave",
         () => {
-          card
-            .querySelectorAll(".album-preview")
-            .forEach((item, index) => {
-              item.classList.toggle(
-                "active",
-                index === 0
-              );
-            });
+          setActivePreview(0);
+        }
+      );
 
-          card
-            .querySelectorAll(".album-dot")
-            .forEach((item, index) => {
-              item.classList.toggle(
-                "active",
-                index === 0
-              );
-            });
+      card.addEventListener(
+        "focus",
+        () => {
+          setActivePreview(0);
+        }
+      );
+
+      card.addEventListener(
+        "blur",
+        () => {
+          setActivePreview(0);
         }
       );
 
