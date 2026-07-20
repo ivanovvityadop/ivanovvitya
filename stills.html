@@ -1,208 +1,24 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Stills — Victor Ivanov</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<style>
-:root{
-  --bg:#000;
-  --fg:#f2f2f2;
-  --muted:rgba(255,255,255,.5);
-  --gap:16px;
-  --pad:26px;
-}
+  <title>Stills — Victor Ivanov</title>
 
-*{ box-sizing:border-box; }
+  <meta
+    http-equiv="refresh"
+    content="0; url=/preview/stills.html"
+  >
 
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--fg);
-  font-family: ui-sans-serif, system-ui, -apple-system;
-}
-
-header{
-  padding:18px var(--pad);
-}
-
-a{
-  color:var(--muted);
-  text-decoration:none;
-  font-size:12px;
-}
-
-main{
-  padding:0 var(--pad) 80px;
-}
-
-h1{
-  font-size:12px;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  opacity:.6;
-  margin:0 0 24px;
-}
-
-/* GRID */
-.grid{
-  width:100vw;
-  margin-left:calc(50% - 50vw);
-  column-count:3;
-  column-gap:var(--gap);
-}
-
-@media (max-width:1100px){
-  .grid{ column-count:2; }
-}
-
-@media (max-width:680px){
-  .grid{ column-count:1; }
-}
-
-.grid img{
-  width:100%;
-  display:block;
-  margin-bottom:var(--gap);
-  background:#111;
-  cursor:zoom-in;
-}
-
-/* FULLSCREEN VIEWER */
-#viewer{
-  position:fixed;
-  inset:0;
-  background:#000;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:100000;
-  cursor:zoom-out;
-}
-
-#viewer img{
-  max-width:100vw;
-  max-height:100vh;
-  object-fit:contain;
-}
-
-/* UPLOAD TRIGGER */
-#upload{
-  position:fixed;
-  bottom:12px;
-  left:12px;
-  font-family:monospace;
-  font-size:6px;
-  letter-spacing:.12em;
-  color:#ff3b3b;
-  opacity:.25;
-  cursor:pointer;
-  z-index:99999;
-}
-#upload:hover{opacity:.5}
-
-input[type=file]{display:none}
-</style>
+  <script>
+    window.location.replace("/preview/stills.html");
+  </script>
 </head>
 
 <body>
-
-<header>
-  <a href="index.html">← Back</a>
-</header>
-
-<main>
-  <h1>Stills</h1>
-  <div class="grid" id="gallery"></div>
-</main>
-
-<div id="upload">[ UPLOAD STILLS ]</div>
-<input id="file" type="file" accept="image/*" multiple>
-
-<!-- FULLSCREEN VIEWER -->
-<div id="viewer">
-  <img id="viewerImg">
-</div>
-
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-const PASSWORD = 'victor-admin';
-
-const SUPABASE_URL = 'https://dlucexekstfahyhefwhz.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_sYXRXxUI8eY5QoUEHEpW-g_Tgg49Nmt';
-const BUCKET = 'stills';
-
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-const uploadBtn = document.getElementById('upload');
-const fileInput = document.getElementById('file');
-const gallery = document.getElementById('gallery');
-
-const viewer = document.getElementById('viewer');
-const viewerImg = document.getElementById('viewerImg');
-
-let unlocked = localStorage.getItem('stills-admin') === 'yes';
-
-/* UPLOAD */
-uploadBtn.onclick = () => {
-  if (!unlocked) {
-    const p = prompt('password');
-    if (p === PASSWORD) {
-      localStorage.setItem('stills-admin','yes');
-      unlocked = true;
-    } else return;
-  }
-  fileInput.click();
-};
-
-fileInput.onchange = async () => {
-  for (const file of fileInput.files) {
-    const name = Date.now() + '-' + file.name;
-    await sb.storage.from(BUCKET).upload(name, file);
-  }
-  fileInput.value = '';
-  load();
-};
-
-/* LOAD */
-async function load(){
-  const { data } = await sb.storage
-    .from(BUCKET)
-    .list('', { limit:200, sortBy:{column:'created_at',order:'desc'} });
-
-  gallery.innerHTML = '';
-
-  data.forEach(f=>{
-    if (f.name === '.emptyFolderPlaceholder') return;
-    const { data:url } = sb.storage.from(BUCKET).getPublicUrl(f.name);
-    const img = document.createElement('img');
-    img.src = url.publicUrl;
-    gallery.appendChild(img);
-  });
-}
-
-load();
-
-/* FULLSCREEN PREVIEW */
-gallery.addEventListener('click', e=>{
-  if (e.target.tagName !== 'IMG') return;
-  viewerImg.src = e.target.src;
-  viewer.style.display = 'flex';
-});
-
-viewer.addEventListener('click', ()=>{
-  viewer.style.display = 'none';
-  viewerImg.src = '';
-});
-
-document.addEventListener('keydown', e=>{
-  if (e.key === 'Escape') {
-    viewer.style.display = 'none';
-    viewerImg.src = '';
-  }
-});
-</script>
-
+  <a href="/preview/stills.html">
+    Open Victor Ivanov stills
+  </a>
 </body>
 </html>
